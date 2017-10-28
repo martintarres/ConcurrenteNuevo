@@ -13,7 +13,8 @@ public abstract class Politica {
     public int PiezaC;
     protected int [] secuencia;
     protected int [] equilibrio = {14,15,16,17,18,19,0,1,2,3,4,5,6,7,8,9,10,11,12,13};
-    protected int [] preferenciaB = {14,15,16,17,18,19,0,1,2,3,4,5,6,7,8,9,10,11,12,13};
+    protected int [] preferenciaB = {10,11,12,13,0,1,2,3,4,5,6,7,8,9,14,15,16,17,18,19};
+    private Vista v;
 
 
 
@@ -23,6 +24,13 @@ public abstract class Politica {
         this.PiezaA=0;
         this.PiezaB=0;
         this.PiezaC=0;
+        try {
+            Vista ventana = new Vista(this);
+            this.v = ventana;
+            ventana.setVisible(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
 
@@ -38,6 +46,12 @@ public abstract class Politica {
         }
         //Deberpia tirar una excepción por si falla, pero me la soba a estas alturas
         return null;
+    }
+
+    public void actualizarVista(){
+        v.repintar();
+        v.repaint();
+
     }
 
 

@@ -14,18 +14,30 @@ public class PoliticaBardo extends Politica {
     }
 
 
-    public Integer getLock(Matriz VectorAnd){
-        int [] secuencias={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19};
+    public Integer getLock(Matriz VectorAnd) {
 
-        for (int i = 0; i < secuencias.length; i++) {
-            if(VectorAnd.getMatriz()[0][secuencias[i]]!=0){
-                return getInteger(secuencias[i]);
+
+
+        if((this.PiezaB/50)<(this.PiezaC/50)*2){
+            this.secuencia=this.preferenciaB;
+        }
+        else{
+            this.secuencia=this.equilibrio;
+        }
+
+        for (int i = 0; i < this.secuencia.length; i++) {
+            if(VectorAnd.getMatriz()[0][secuencia[i]]!=0){
+                return getInteger(secuencia[i]);
             }
 
         }
+        System.err.println("No se ha seleccionado ninguno hilo del vector AND");
+        return getInteger(0);
 
-        System.err.println("---------------------------------------------------");
-        return -1;
+
+        //return -1;
+
+
 
 
     }
