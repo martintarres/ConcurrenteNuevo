@@ -21,7 +21,7 @@ public class Monitor {
 
 
     private int m;
-    private Hilo hiloDesencolado;
+    private Hilo hiloDespertado;
     private Log log;
     //private int piezaA;
     //private int piezaB;
@@ -31,6 +31,7 @@ public class Monitor {
     private int MaxBuffer;
     //private List<Object>
     private ListasDeDisparos listasDeDisparos;
+    private boolean prioridadDespertado;
 
     public Monitor(Constantes constantes) {
         try {
@@ -59,6 +60,9 @@ public class Monitor {
             this.politica = new PoliticaBardo(mapa);
             m = 0;
             this.MaxBuffer = 9;
+            this.prioridadDespertado=false;
+            this.hiloDespertado=null;
+
 
 
 
@@ -81,6 +85,10 @@ public class Monitor {
             k = true;
 
             while (k == true) {
+                if(prioridadDespertado){
+                    assert (Thread.currentThread()==hiloDespertado);
+                    this.prioridadDespertado=false;
+                }
 
                 Matriz previo = this.petri.marcadoActual().clonar();
                 int Buffersize = Vc.size();
@@ -91,6 +99,7 @@ public class Monitor {
                     if(((Hilo) Thread.currentThread()).getContadorDisparos()%((Hilo) Thread.currentThread()).getTransiciones().size()==0){
 //                        assert ((Hilo) Thread.currentThread()).verificarInicio();
                     }
+
                     VectorSensibilizados = getPetri().vectorSensibilizadas;
                     assert unicaTransicionPorHilo(VectorSensibilizados);
                     VectorHistorialSensibilizadas.or(VectorHistorialSensibilizadas,VectorSensibilizados);
@@ -120,56 +129,41 @@ public class Monitor {
                         politica.PiezaC++;
                         cambio = true;
                     }
-
-                    this.log.escribir("------------------------------------------------------------------------------------------------------------------", log.getRegistro());
-                    this.log.escribir("\n", log.getRegistro());
-                    this.log.escribir("Contador de disparos : " + this.getPetri().contador, log.getRegistro());
-                    this.log.escribir("\n", log.getRegistro());
-                    this.log.escribir(((Hilo) (Thread.currentThread())).getNombre() + " ha disparado la transicion  : " + traducirDisparo(transicion), log.getRegistro());
-                    //this.log.escribir("Contador "+ this.getPetri().contador,log.getRegistro());
+                    log.registrarBasico(this, transicion);
+                   //this.log.escribir("Contador "+ this.getPetri().contador,log.getRegistro());
                     if (cambio) {
                         this.log.escribir("Cantidad de piezas producidas:  " + "A = " + politica.PiezaA + "   B = " + politica.PiezaB + "   C = " + politica.PiezaC, log.getRegistro());
                         politica.actualizarVista();
                     }
                     cambio = false;
 
-                    this.log.escribir("\n", log.getRegistro());
-                    this.log.escribir("Marcado Actual : ", log.getRegistro());
-                    this.log.escribir("  M1  M2  M3  M4 P10 P11 P12 P13 P14 P15 P16 P17 P18 P20 P21 P22 P23 P30 P31 P32 P33 P34 P35  R1  R2  R3  s1  s2", log.getRegistro());
-                    this.log.escribir(this.getPetri().marcadoActual().toString()+"\n", log.getRegistro());
-                    // this.log.escribir("----------------------------------------------------------------------",log.getRegistro());
-
-
-                    this.log.escribir(this.getPetri().marcadoActual().toString(), log.getMarcados());
-
-
-                    this.log.escribir("\n", log.getRegistro());
-                    this.log.escribir(printHilosDeVector("Hilos Sensibilizados  =  ", VectorSensibilizados), log.getRegistro());
-                    this.log.escribir("\n", log.getRegistro());
-                    this.log.escribir(printHilosDeVector("Hilos Encolados  =  ", VectorEncolados), log.getRegistro());
-                    this.log.escribir("\n", log.getRegistro());
-
+                    log.registrarBasico2(this,VectorSensibilizados,VectorEncolados);
 
                     VectorAnd.and(VectorSensibilizados, VectorEncolados);
                     //VectorAnd.getMatriz()[0][10]=0;
                     //VectorAnd.getMatriz()[0][14]=0;
 
                     if (cantidadDeUnos(VectorAnd) != 0) {
-
-                        this.log.escribir(printHilosDeVector("Hilos en ambas  =  ", VectorAnd), log.getRegistro());
-                        this.log.escribir("\n", log.getRegistro());
-
-
                         Integer locker = politica.getLock(VectorAnd);
-                        VectorEncolados.getMatriz()[0][locker]=0;
+                        int t= locker.intValue();
+                        VectorEncolados.getMatriz()[0][t]=0;
+                        assert(VectorEncolados.getMatriz()[0][t]==0);
+                        this.hiloDespertado=mapa.get(locker);
                         synchronized (locker) {
                             assert BufferOverflow();
                             Vc.remove(mapa.get(locker));
+                            System.out.println(mapa.get(locker).getState()+"   "+mapa.get(locker).getNombre());
+                            assert (mapa.get(locker).getState()==Thread.State.WAITING);
+
                             locker.notify();
-                            this.log.escribir("Hilo despertado  =  "+ mapa.get(locker).getNombre(), log.getRegistro());
-                            this.log.escribir("\n", log.getRegistro());
+
+                            //assert (mapa.get(locker).getState()==Thread.State.);
+
+                            log.registrarEXtendido(this,VectorAnd,mapa.get(locker));
+
 
                         }
+                        //System.out.println(mapa.get(locker).getState());
 
                         return;
                     } else {
@@ -205,6 +199,7 @@ public class Monitor {
 
 
         } catch (Exception e) {
+            e.printStackTrace();
             System.err.println(e.getMessage() + "laralara");
         }
     }

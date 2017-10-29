@@ -121,4 +121,46 @@ public class Log {
             return null;
         }
     }
+
+    public void registrarBasico(Monitor m, int transicion){
+        escribir("------------------------------------------------------------------------------------------------------------------", this.getRegistro());
+        escribir("\n", this.getRegistro());
+        escribir("Contador de disparos : " + m.getPetri().contador, this.getRegistro());
+        escribir("\n", this.getRegistro());
+        escribir(((Hilo) (Thread.currentThread())).getNombre() + " ha disparado la transicion  : " + m.traducirDisparo(transicion), this.getRegistro());
+
+
+    }
+    public void registrarBasico2(Monitor m, Matriz sensi, Matriz enco){
+        escribir("\n", this.getRegistro());
+        escribir("Marcado Actual : ", this.getRegistro());
+        escribir("  M1  M2  M3  M4 P10 P11 P12 P13 P14 P15 P16 P17 P18 P20 P21 P22 P23 P30 P31 P32 P33 P34 P35  R1  R2  R3  s1  s2", this.getRegistro());
+        escribir(m.getPetri().marcadoActual().toString()+"\n", this.getRegistro());
+        // this.log.escribir("----------------------------------------------------------------------",log.getRegistro());
+
+
+        escribir(m.getPetri().marcadoActual().toString(), this.getMarcados());
+
+
+        escribir("\n", this.getRegistro());
+        escribir(m.printHilosDeVector("Hilos Sensibilizados  =  ", sensi), this.getRegistro());
+        escribir("\n", this.getRegistro());
+        escribir(m.printHilosDeVector("Hilos Encolados  =  ", enco), this.getRegistro());
+        escribir("\n", this.getRegistro());
+
+
+    }
+    public void registrarCantidads(Monitor m,Integer transicion){
+
+
+    }
+
+    public void registrarEXtendido(Monitor m,Matriz and, Hilo h){
+        escribir(m.printHilosDeVector("Hilos en ambas  =  ", and), this.getRegistro());
+        escribir("\n", this.getRegistro());
+        escribir("Hilo despertado  =  "+ h.getNombre(), this.getRegistro());
+        escribir("\n", this.getRegistro());
+
+
+    }
 }
