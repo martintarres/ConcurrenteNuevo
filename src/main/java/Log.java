@@ -55,7 +55,7 @@ public class Log {
             return lineasLeidas;
         }
     }
-    public void escribir(String linea,File destino){
+    public synchronized void  escribir(String linea,File destino){
         try{
             FileWriter fw = new FileWriter(destino,true);
             //fw.write(linea);
@@ -64,7 +64,8 @@ public class Log {
             //pw.println(linea);
             bw = new BufferedWriter(fw);
             bw.write(linea);
-           // bw.newLine();
+            //bw.write("\n");
+           bw.newLine();
         }
         catch(Exception e){
             System.err.println(e.getMessage());

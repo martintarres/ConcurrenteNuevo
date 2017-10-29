@@ -4,7 +4,7 @@ import java.util.concurrent.Semaphore;
 
 public class Monitor {
     CountDownLatch contador;
-    public Semaforo mutex;
+    public Semaphore mutex;
     //private Semaphore mutex;
     private boolean k;
     public RdP petri;
@@ -34,7 +34,7 @@ public class Monitor {
 
     public Monitor(Constantes constantes) {
         try {
-            mutex = new Semaforo(1, true);
+            mutex = new Semaphore(1, true);
             k = true;
             this.constantes = constantes;
             petri = new RdP(constantes.marcadoInicial, constantes.incidenciaPrevia, constantes.incidenciaPosterior, constantes.PInvariante);
@@ -63,8 +63,8 @@ public class Monitor {
 
 
 
-            this.log = new Log("C:\\Users\\alexa\\Desktop\\CONCURRENTE\\ProgramacionConcurrente\\marcados.txt",
-                    "C:\\Users\\alexa\\Desktop\\CONCURRENTE\\ProgramacionConcurrente\\registro.txt");
+            this.log = new Log("C:\\Users\\alexa\\Desktop\\ConcurrenteNuevo\\marcados.txt",
+                    "C:\\Users\\alexa\\Desktop\\ConcurrenteNuevo\\registro.txt");
             log.limpiar();
 
 
@@ -121,21 +121,21 @@ public class Monitor {
                         cambio = true;
                     }
 
-                    this.log.escribir("------------------------------------------------------------------------------------------------------------------"+"\n", log.getRegistro());
+                    this.log.escribir("------------------------------------------------------------------------------------------------------------------", log.getRegistro());
                     this.log.escribir("\n", log.getRegistro());
                     this.log.escribir("Contador de disparos : " + this.getPetri().contador, log.getRegistro());
                     this.log.escribir("\n", log.getRegistro());
-                    this.log.escribir(((Hilo) (Thread.currentThread())).getNombre() + " ha disparado la transicion  : " + traducirDisparo(transicion)+"\n", log.getRegistro());
+                    this.log.escribir(((Hilo) (Thread.currentThread())).getNombre() + " ha disparado la transicion  : " + traducirDisparo(transicion), log.getRegistro());
                     //this.log.escribir("Contador "+ this.getPetri().contador,log.getRegistro());
                     if (cambio) {
-                        this.log.escribir("Cantidad de piezas producidas:  " + "A = " + politica.PiezaA + "   B = " + politica.PiezaB + "   C = " + politica.PiezaC+"\n", log.getRegistro());
+                        this.log.escribir("Cantidad de piezas producidas:  " + "A = " + politica.PiezaA + "   B = " + politica.PiezaB + "   C = " + politica.PiezaC, log.getRegistro());
                         politica.actualizarVista();
                     }
                     cambio = false;
 
                     this.log.escribir("\n", log.getRegistro());
                     this.log.escribir("Marcado Actual : ", log.getRegistro());
-                    this.log.escribir("  M1  M2  M3  M4 P10 P11 P12 P13 P14 P15 P16 P17 P18 P20 P21 P22 P23 P30 P31 P32 P33 P34 P35  R1  R2  R3  s1  s2"+"\n", log.getRegistro());
+                    this.log.escribir("  M1  M2  M3  M4 P10 P11 P12 P13 P14 P15 P16 P17 P18 P20 P21 P22 P23 P30 P31 P32 P33 P34 P35  R1  R2  R3  s1  s2", log.getRegistro());
                     this.log.escribir(this.getPetri().marcadoActual().toString()+"\n", log.getRegistro());
                     // this.log.escribir("----------------------------------------------------------------------",log.getRegistro());
 
