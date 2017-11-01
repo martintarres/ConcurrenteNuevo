@@ -89,7 +89,7 @@ public class RdP{
         //System.out.println("el hilo " + ((Hilo)(Thread.currentThread())).getNombre() + " disparo " + x);
         //vectorSensibilizadas.imprimir();
         contador++;
-        System.out.println("soy contador " + contador);
+        System.out.println("Contador de Disparos =  " + contador);
         return true;
       }
       else{

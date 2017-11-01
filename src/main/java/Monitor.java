@@ -78,17 +78,20 @@ public class Monitor {
 
     }
 
-    public void dispararTransicion(Integer transicion) {
+    public  void dispararTransicion(Integer transicion) {
         try {
+            //synchronized (mutex)
 
             mutex.acquire();
             k = true;
 
             while (k == true) {
-                if(prioridadDespertado){
-                    assert (Thread.currentThread()==hiloDespertado);
-                    this.prioridadDespertado=false;
+                if (prioridadDespertado) {
+                    assert (Thread.currentThread() == hiloDespertado);
+                    this.prioridadDespertado = false;
                 }
+                Hilo actual = (Hilo) (Thread.currentThread());
+                System.out.println("Hilo " + actual.getNombre() + " tratando de disparar " + traducirDisparo(transicion));
 
                 Matriz previo = this.petri.marcadoActual().clonar();
                 int Buffersize = Vc.size();
@@ -96,16 +99,16 @@ public class Monitor {
 
 
                 if (k == true) {
-                    if(((Hilo) Thread.currentThread()).getContadorDisparos()%((Hilo) Thread.currentThread()).getTransiciones().size()==0){
+                    if (((Hilo) Thread.currentThread()).getContadorDisparos() % ((Hilo) Thread.currentThread()).getTransiciones().size() == 0) {
 //                        assert ((Hilo) Thread.currentThread()).verificarInicio();
                     }
 
                     VectorSensibilizados = getPetri().vectorSensibilizadas;
                     assert unicaTransicionPorHilo(VectorSensibilizados);
-                    VectorHistorialSensibilizadas.or(VectorHistorialSensibilizadas,VectorSensibilizados);
+                    VectorHistorialSensibilizadas.or(VectorHistorialSensibilizadas, VectorSensibilizados);
 
                     assert (verificarHistorialSensibilizadas());
-                    if(this.getPetri().contador%500==0&&this.getPetri().contador!=0){
+                    if (this.getPetri().contador % 500 == 0 && this.getPetri().contador != 0) {
                         this.VectorHistorialSensibilizadas = Matriz.matrizVacia(1, petri.getIncidenciaPrevia().getN());
                     }
 
@@ -130,42 +133,52 @@ public class Monitor {
                         cambio = true;
                     }
                     log.registrarBasico(this, transicion);
-                   //this.log.escribir("Contador "+ this.getPetri().contador,log.getRegistro());
+                    //this.log.escribir("Contador "+ this.getPetri().contador,log.getRegistro());
                     if (cambio) {
                         this.log.escribir("Cantidad de piezas producidas:  " + "A = " + politica.PiezaA + "   B = " + politica.PiezaB + "   C = " + politica.PiezaC, log.getRegistro());
                         politica.actualizarVista();
                     }
                     cambio = false;
 
-                    log.registrarBasico2(this,VectorSensibilizados,VectorEncolados);
+                    log.registrarBasico2(this, VectorSensibilizados, VectorEncolados);
 
                     VectorAnd.and(VectorSensibilizados, VectorEncolados);
                     //VectorAnd.getMatriz()[0][10]=0;
                     //VectorAnd.getMatriz()[0][14]=0;
+                    //System.out.println(actual.getNombre() + "verifica and");
 
                     if (cantidadDeUnos(VectorAnd) != 0) {
                         Integer locker = politica.getLock(VectorAnd);
-                        int t= locker.intValue();
-                        VectorEncolados.getMatriz()[0][t]=0;
-                        assert(VectorEncolados.getMatriz()[0][t]==0);
-                        this.hiloDespertado=mapa.get(locker);
+                        int t = locker.intValue();
+                        VectorEncolados.getMatriz()[0][t] = 0;
+                        assert (VectorEncolados.getMatriz()[0][t] == 0);
+                        this.hiloDespertado = mapa.get(locker);
+
+                        assert BufferOverflow();
+                        Vc.remove(mapa.get(locker));
+                        //System.out.println(mapa.get(locker).getState()+"   "+mapa.get(locker).getNombre());
+                        //assert (mapa.get(locker).getState()==Thread.State.WAITING);
+
+                        while (mapa.get(locker).getState() != Thread.State.WAITING) {
+                            Thread.currentThread().sleep(1);
+                            System.err.println("Esperando que se duerma para despertarlo : "+mapa.get(locker));
+                            //System.out.println(mapa.get(locker).getState() + "   " + mapa.get(locker).getNombre());
+                        }
+
+                        log.registrarEXtendido(this, VectorAnd, mapa.get(locker));
                         synchronized (locker) {
-                            assert BufferOverflow();
-                            Vc.remove(mapa.get(locker));
-                            System.out.println(mapa.get(locker).getState()+"   "+mapa.get(locker).getNombre());
-                            assert (mapa.get(locker).getState()==Thread.State.WAITING);
+
 
                             locker.notify();
+                            return;
 
                             //assert (mapa.get(locker).getState()==Thread.State.);
 
-                            log.registrarEXtendido(this,VectorAnd,mapa.get(locker));
-
 
                         }
-                        //System.out.println(mapa.get(locker).getState());
 
-                        return;
+
+                        //return;
                     } else {
 
                         k = false;
@@ -173,27 +186,30 @@ public class Monitor {
 
                 } else {
                     //assert (false);
-                    assert(previo.esIgual(getPetri().marcadoActual()));
+                    assert (previo.esIgual(getPetri().marcadoActual()));
                     Vc.add((Hilo) Thread.currentThread());
-                    assert (Vc.get(Vc.size()-1).equals((Hilo)Thread.currentThread()));
+                    assert (Vc.get(Vc.size() - 1).equals((Hilo) Thread.currentThread()));
                     //System.out.println("Hilos encolados: " + Vc);
                     assert BufferOverflow();
-                    assert (cantidadDeUnos(VectorEncolados)<MaxBuffer);
+                    assert (cantidadDeUnos(VectorEncolados) < MaxBuffer);
                     assert encoladosRepetidos();
-                    VectorEncolados.getMatriz()[0][transicion]=1;
+                    VectorEncolados.getMatriz()[0][transicion] = 1;
                     assert (Buffersize + 1 == cantidadDeUnos(VectorEncolados));
                     mutex.release();
                     assert unicaTransicionPorHilo(VectorEncolados);
-                    assert (((Hilo) Thread.currentThread()).verificarTransicionDormida(VectorEncolados,mapa));
+                    assert (((Hilo) Thread.currentThread()).verificarTransicionDormida(VectorEncolados, mapa));
 
                     synchronized (transicion) {
+                        System.out.println("Todavia no me dormi");
                         transicion.wait();
+
 
                     }
                 }
 
 
             }
+
 
             mutex.release();
 
