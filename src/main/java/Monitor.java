@@ -153,6 +153,7 @@ public class Monitor {
                         VectorEncolados.getMatriz()[0][t] = 0;
                         assert (VectorEncolados.getMatriz()[0][t] == 0);
                         this.hiloDespertado = mapa.get(locker);
+                        log.registrarEXtendido(this, VectorAnd, mapa.get(locker));
 
                         assert BufferOverflow();
                         Vc.remove(mapa.get(locker));
@@ -165,7 +166,7 @@ public class Monitor {
                             //System.out.println(mapa.get(locker).getState() + "   " + mapa.get(locker).getNombre());
                         }
 
-                        log.registrarEXtendido(this, VectorAnd, mapa.get(locker));
+
                         synchronized (locker) {
 
 
@@ -195,12 +196,13 @@ public class Monitor {
                     assert encoladosRepetidos();
                     VectorEncolados.getMatriz()[0][transicion] = 1;
                     assert (Buffersize + 1 == cantidadDeUnos(VectorEncolados));
-                    mutex.release();
+
                     assert unicaTransicionPorHilo(VectorEncolados);
                     assert (((Hilo) Thread.currentThread()).verificarTransicionDormida(VectorEncolados, mapa));
 
                     synchronized (transicion) {
                         System.out.println("Todavia no me dormi");
+                        mutex.release();
                         transicion.wait();
 
 
