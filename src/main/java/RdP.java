@@ -187,8 +187,28 @@ public class RdP{
       return false;
     }
   }
+  public boolean transicionSensibilizada(int transición,Matriz VectorSensi ){
+    if(VectorSensi.getMatriz()[0][transición]==1){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+  public boolean marcadoPositivo(Matriz Marcado){
+    for (int i = 0; i < Marcado.getM(); i++) {
+      for (int j = 0; j < Marcado.getN(); j++) {
+        if(Marcado.getMatriz()[i][j]<0){
+          return false;
+        }
+
+      }
+
+    }
+    return true;
+  }
 
 
-//Algunas noches, soy facil, uoooo uooooo
+
 
 }

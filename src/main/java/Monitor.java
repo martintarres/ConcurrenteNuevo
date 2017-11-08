@@ -3,33 +3,23 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 
 public class Monitor {
-    CountDownLatch contador;
     public Semaphore mutex;
-    //private Semaphore mutex;
     private boolean k;
     public RdP petri;
     private List<Hilo> listaHilos;
     private Map<Integer, Hilo> mapa;
     private Constantes constantes;
-
     private Matriz VectorSensibilizados;
     private Matriz VectorEncolados;
     private Matriz VectorAnd;
     private Matriz VectorHistorialSensibilizadas;
-
     private List<Hilo> Vc;  // Lista de hilos encolados porque sus transiciones no estaban sensibilizadas
-
-
     private int m;
     private Hilo hiloDespertado;
     private Log log;
-    //private int piezaA;
-    //private int piezaB;
-    //private int piezaC;
     private boolean cambio;
     private Politica politica;
     private int MaxBuffer;
-    //private List<Object>
     private ListasDeDisparos listasDeDisparos;
     private boolean prioridadDespertado;
 
@@ -46,14 +36,7 @@ public class Monitor {
             VectorEncolados = Matriz.matrizVacia(1, petri.getIncidenciaPrevia().getN());
             VectorAnd = Matriz.matrizVacia(1, getPetri().getIncidenciaPrevia().getN());
             VectorHistorialSensibilizadas = Matriz.matrizVacia(1, petri.getIncidenciaPrevia().getN());
-
-
-
             Vc = new ArrayList<Hilo>();
-
-            //this.piezaA = 0;
-            //this.piezaB = 0;
-            //this.piezaC = 0;
             this.cambio = false;
             this.listasDeDisparos = listasDeDisparos;
             //this.politica = new PoliticaRandom(mapa,listasDeDisparos);
@@ -62,10 +45,6 @@ public class Monitor {
             this.MaxBuffer = 9;
             this.prioridadDespertado=false;
             this.hiloDespertado=null;
-
-
-
-
 
             this.log = new Log("C:\\Users\\alexa\\Desktop\\ConcurrenteNuevo\\marcados.txt",
                     "C:\\Users\\alexa\\Desktop\\ConcurrenteNuevo\\registro.txt");
@@ -94,6 +73,7 @@ public class Monitor {
                 System.out.println("Hilo " + actual.getNombre() + " tratando de disparar " + traducirDisparo(transicion));
 
                 Matriz previo = this.petri.marcadoActual().clonar();
+                Matriz SensiPrevio = this.VectorSensibilizados.clonar();
                 int Buffersize = Vc.size();
                 k = petri.disparar(transicion);   // Disparo la transicion
 
@@ -102,6 +82,8 @@ public class Monitor {
                     if (((Hilo) Thread.currentThread()).getContadorDisparos() % ((Hilo) Thread.currentThread()).getTransiciones().size() == 0) {
 //                        assert ((Hilo) Thread.currentThread()).verificarInicio();
                     }
+                    assert(this.getPetri().transicionSensibilizada(transicion,SensiPrevio));
+                    assert (this.getPetri().marcadoPositivo(this.getPetri().marcadoActual()));
 
                     VectorSensibilizados = getPetri().vectorSensibilizadas;
                     assert unicaTransicionPorHilo(VectorSensibilizados);
@@ -186,6 +168,7 @@ public class Monitor {
                     }
 
                 } else {
+                    assert(!this.getPetri().transicionSensibilizada(transicion,SensiPrevio));
                     //assert (false);
                     assert (previo.esIgual(getPetri().marcadoActual()));
                     Vc.add((Hilo) Thread.currentThread());
