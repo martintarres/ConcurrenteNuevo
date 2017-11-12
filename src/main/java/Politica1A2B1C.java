@@ -5,8 +5,8 @@ import java.util.Map;
 /**
  * Created by YepezHinostroza on 25/10/2017.
  */
-public class PoliticaBardo extends Politica {
-    public PoliticaBardo(Map<Integer,Hilo> mapa){
+public class Politica1A2B1C extends Politica {
+    public Politica1A2B1C(Map<Integer,Hilo> mapa){
         super(mapa);
 
 
@@ -33,12 +33,14 @@ public class PoliticaBardo extends Politica {
         }
         System.err.println("No se ha seleccionado ninguno hilo del vector AND");
         return getInteger(0);
-
-
-        //return -1;
-
-
-
+    }
+    public boolean hayAlguienParaDespertar(Matriz And){
+        if(And.cantidadDeUnos()>0){
+            return true;
+        }
+        else{
+            return false;
+        }
 
     }
 }

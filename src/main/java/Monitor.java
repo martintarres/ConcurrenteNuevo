@@ -40,7 +40,7 @@ public class Monitor {
             this.cambio = false;
             this.listasDeDisparos = listasDeDisparos;
             //this.politica = new PoliticaRandom(mapa,listasDeDisparos);
-            this.politica = new PoliticaBardo(mapa);
+            this.politica = new Politica3A2B1C(mapa);
             m = 0;
             this.MaxBuffer = 9;
             this.prioridadDespertado=false;
@@ -129,7 +129,7 @@ public class Monitor {
                     //VectorAnd.getMatriz()[0][14]=0;
                     //System.out.println(actual.getNombre() + "verifica and");
 
-                    if (cantidadDeUnos(VectorAnd) != 0) {
+                    if (politica.hayAlguienParaDespertar(VectorAnd)) {
                         Integer locker = politica.getLock(VectorAnd);
                         int t = locker.intValue();
                         VectorEncolados.getMatriz()[0][t] = 0;

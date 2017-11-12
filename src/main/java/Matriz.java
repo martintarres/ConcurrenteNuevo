@@ -254,6 +254,17 @@ public class Matriz{
     }
     return;
   }
+  public int cantidadDeUnos() {
+    int cantidad = 0;
+    int[][] arreglo = this.getMatriz();
+    for (int i = 0; i < this.getN(); i++) {
+      if (arreglo[0][i] != 0) {
+        cantidad++;
+      }
+
+    }
+    return cantidad;
+  }
 
 
 }
