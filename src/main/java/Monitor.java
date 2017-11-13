@@ -23,7 +23,7 @@ public class Monitor {
     private ListasDeDisparos listasDeDisparos;
     private boolean prioridadDespertado;
 
-    public Monitor(Constantes constantes) {
+    public Monitor(Constantes constantes,int pol) {
         try {
             mutex = new Semaphore(1, true);
             k = true;
@@ -40,7 +40,14 @@ public class Monitor {
             this.cambio = false;
             this.listasDeDisparos = listasDeDisparos;
             //this.politica = new PoliticaRandom(mapa,listasDeDisparos);
-            this.politica = new Politica3A2B1C(mapa);
+
+            if(pol==1){
+                this.politica = new Politica1A2B1C(mapa);
+            }
+            else{
+                this.politica = new Politica3A2B1C(mapa);
+            }
+
             m = 0;
             this.MaxBuffer = 9;
             this.prioridadDespertado=false;
@@ -70,8 +77,6 @@ public class Monitor {
                     this.prioridadDespertado = false;
                 }
                 Hilo actual = (Hilo) (Thread.currentThread());
-                System.out.println("Hilo " + actual.getNombre() + " tratando de disparar " + traducirDisparo(transicion));
-
                 Matriz previo = this.petri.marcadoActual().clonar();
                 Matriz SensiPrevio = this.VectorSensibilizados.clonar();
                 int Buffersize = Vc.size();
@@ -184,7 +189,6 @@ public class Monitor {
                     assert (((Hilo) Thread.currentThread()).verificarTransicionDormida(VectorEncolados, mapa));
 
                     synchronized (transicion) {
-                        System.out.println("Todavia no me dormi");
                         mutex.release();
                         transicion.wait();
 
