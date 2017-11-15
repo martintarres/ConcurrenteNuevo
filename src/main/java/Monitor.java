@@ -329,6 +329,21 @@ public class Monitor {
         return transicion;
 
     }
+    public String lineaMarcados(){
+        String cadena = "";
+
+        for (int i = 0; i <constantes.nombreMarcados.length; i++) {
+            String campo = constantes.nombreMarcados[i];
+
+            while(campo.length()<4){
+                campo= " "+campo;
+            }
+            cadena=cadena+campo;
+
+        }
+
+        return cadena;
+    }
 
     public boolean BufferOverflow() {    //231
     /*

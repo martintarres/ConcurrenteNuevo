@@ -14,6 +14,7 @@ public class Constantes {
   public Matriz marcadoInicial;
   public Matriz PInvariante;
   public String[] nombreTransiciones;
+  public String[] nombreMarcados;
   public int inci1;
   public int inci2;
   public int TotalPInva;
@@ -43,6 +44,7 @@ public class Constantes {
 
 
       String[][] Posterior = lector.getTabla(lector.cortar("Forwards incidence matrix I+", "Backwards incidence matrix I-"));
+
       for (int i = 0; i < 1; i++) {
         for (int j = 0; j < lector.cantidadColumnas(lector.cortar("Forwards incidence matrix I+", "Backwards incidence matrix I-")); j++) {
           if (Posterior[i][j].contains("T")) {
@@ -67,6 +69,11 @@ public class Constantes {
         System.out.print(i+" ");
       }
       System.out.println();
+      nombreMarcados= new String[Posterior.length-1];
+      for (int i = 0; i < nombreMarcados.length; i++) {
+        nombreMarcados[i]= Posterior[i+1][0];
+
+      }
 
       // String[][] tablaPosterior = lector.getTabla(lector.cortar("Forwards incidence matrix I+","Backwards incidence matrix I-"));
       for (int i = 0; i < lector.cantidadFilas(lector.cortar("Forwards incidence matrix I+", "Backwards incidence matrix I-")); i++) {

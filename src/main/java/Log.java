@@ -134,7 +134,8 @@ public class Log {
     public void registrarBasico2(Monitor m, Matriz sensi, Matriz enco){
         escribir("\n", this.getRegistro());
         escribir("Marcado Actual : ", this.getRegistro());
-        escribir("  M1  M2  M3  M4 P10 P11 P12 P13 P14 P15 P16 P17 P18 P20 P21 P22 P23 P30 P31 P32 P33 P34 P35  R1  R2  R3  s1  s2", this.getRegistro());
+        escribir(m.lineaMarcados(), this.getRegistro());
+        //escribir("  M1  M2  M3  M4 P10 P11 P12 P13 P14 P15 P16 P17 P18 P20 P21 P22 P23 P30 P31 P32 P33 P34 P35  R1  R2  R3  s1  s2", this.getRegistro());
         escribir(m.getPetri().marcadoActual().toString()+"\n", this.getRegistro());
         // this.log.escribir("----------------------------------------------------------------------",log.getRegistro());
 
