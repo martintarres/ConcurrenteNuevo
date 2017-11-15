@@ -22,6 +22,7 @@ public class Monitor {
     private int MaxBuffer;
     private ListasDeDisparos listasDeDisparos;
     private boolean prioridadDespertado;
+    private boolean modoVerborragico;
 
     public Monitor(Constantes constantes,int pol) {
         try {
@@ -40,12 +41,21 @@ public class Monitor {
             this.cambio = false;
             this.listasDeDisparos = listasDeDisparos;
             //this.politica = new PoliticaRandom(mapa,listasDeDisparos);
+            modoVerborragico=false;
 
             if(pol==1){
                 this.politica = new Politica1A2B1C(mapa);
+
             }
             else{
-                this.politica = new Politica3A2B1C(mapa);
+                if(pol==2){
+                    this.politica = new Politica3A2B1C(mapa);
+                }
+                else{
+                    this.politica = new PoliticaRandom(mapa);
+                    this.modoVerborragico=true;
+                }
+
             }
 
             m = 0;
@@ -59,6 +69,7 @@ public class Monitor {
 
 
         } catch (Exception e) {
+            System.err.println("No se ha podido inicializar el monitor");
 
         }
 
@@ -67,11 +78,17 @@ public class Monitor {
     public  void dispararTransicion(Integer transicion) {
         try {
             //synchronized (mutex)
+            if(modoVerborragico){
+                System.out.println(((Hilo)(Thread.currentThread())).getNombre()+ "  pide el mutex.");
+            }
 
             mutex.acquire();
             k = true;
 
             while (k == true) {
+                if(modoVerborragico){
+                    System.out.println(((Hilo)(Thread.currentThread())).getNombre()+ "  obtiene el mutex.");
+                }
                 if (prioridadDespertado) {
                     assert (Thread.currentThread() == hiloDespertado);
                     this.prioridadDespertado = false;
@@ -84,6 +101,9 @@ public class Monitor {
 
 
                 if (k == true) {
+                    if(modoVerborragico){
+                        System.out.println(((Hilo)(Thread.currentThread())).getNombre()+ "  dispara la transicion  "+traducirDisparo(transicion) );
+                    }
                     if (((Hilo) Thread.currentThread()).getContadorDisparos() % ((Hilo) Thread.currentThread()).getTransiciones().size() == 0) {
 //                        assert ((Hilo) Thread.currentThread()).verificarInicio();
                     }
@@ -135,11 +155,15 @@ public class Monitor {
                     //System.out.println(actual.getNombre() + "verifica and");
 
                     if (politica.hayAlguienParaDespertar(VectorAnd)) {
+
                         Integer locker = politica.getLock(VectorAnd);
                         int t = locker.intValue();
                         VectorEncolados.getMatriz()[0][t] = 0;
                         assert (VectorEncolados.getMatriz()[0][t] == 0);
                         this.hiloDespertado = mapa.get(locker);
+                        if(modoVerborragico){
+                            System.out.println(((Hilo)(Thread.currentThread())).getNombre()+ "  despierta al hilo "+ this.hiloDespertado.getNombre());
+                        }
                         log.registrarEXtendido(this, VectorAnd, mapa.get(locker));
 
                         assert BufferOverflow();
@@ -149,7 +173,7 @@ public class Monitor {
 
                         while (mapa.get(locker).getState() != Thread.State.WAITING) {
                             Thread.currentThread().sleep(1);
-                            System.err.println("Esperando que se duerma para despertarlo : "+mapa.get(locker));
+                            System.err.println("Esperando que se duerma para despertarlo : "+mapa.get(locker).getNombre());
                             //System.out.println(mapa.get(locker).getState() + "   " + mapa.get(locker).getNombre());
                         }
 
@@ -158,12 +182,16 @@ public class Monitor {
 
 
                             locker.notify();
+                            if(modoVerborragico){
+                                System.out.println(((Hilo)(Thread.currentThread())).getNombre()+ "  sale del monitor");
+                            }
                             return;
 
                             //assert (mapa.get(locker).getState()==Thread.State.);
 
 
                         }
+
 
 
                         //return;
@@ -173,6 +201,9 @@ public class Monitor {
                     }
 
                 } else {
+                    if(modoVerborragico){
+                        System.out.println(((Hilo)(Thread.currentThread())).getNombre()+ "  no pudo disparar la transicion  "+ traducirDisparo(transicion));
+                    }
                     assert(!this.getPetri().transicionSensibilizada(transicion,SensiPrevio));
                     //assert (false);
                     assert (previo.esIgual(getPetri().marcadoActual()));
@@ -189,7 +220,13 @@ public class Monitor {
                     assert (((Hilo) Thread.currentThread()).verificarTransicionDormida(VectorEncolados, mapa));
 
                     synchronized (transicion) {
+                        if(modoVerborragico){
+                            System.out.println(((Hilo)(Thread.currentThread())).getNombre()+ "  devuelve el mutex");
+                        }
                         mutex.release();
+                        if(modoVerborragico){
+                            System.out.println(((Hilo)(Thread.currentThread())).getNombre()+ "  procede a dormir");
+                        }
                         transicion.wait();
 
 
@@ -198,9 +235,13 @@ public class Monitor {
 
 
             }
+            if(modoVerborragico){
+                System.out.println(((Hilo)(Thread.currentThread())).getNombre()+ "  devuelve el mutex");
+            }
 
 
             mutex.release();
+
 
 
         } catch (Exception e) {
