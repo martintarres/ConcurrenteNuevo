@@ -1,14 +1,13 @@
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Hilo extends Thread {
 
-  private String nombre;
-  private Monitor monitor;
-  private List<Integer> enteros;
-  private Object lock;
+  final String nombre;
+  final Monitor monitor;
+  final List<Integer> enteros;
+
   private int contadorDisparos;
   public List<Hilo> anteriores;
   public List<Hilo> posteriores;
@@ -61,7 +60,7 @@ public class Hilo extends Thread {
   public int getContadorDisparos(){
     return this.contadorDisparos;
   }
-  public boolean verificarSecuenciaT(int disparada){    //120 de Monitor
+  public boolean verificarSecuenciaT(final int disparada){    //120 de Monitor
     /*
     // Verifica que la lista de enteros del hilo se ejecute en la secuencia fijada
     // @disparada  entero que representa la última trasición que se disparó de ese hilo
@@ -75,7 +74,7 @@ public class Hilo extends Thread {
           lista.add(h);
       }
   }
-  public void agregarAnterior(Hilo h){
+  public void agregarAnterior(final Hilo h){
       agregarALista(this.anteriores,h);
   }
   public void agregarPosterior(Hilo h){
@@ -87,8 +86,7 @@ public class Hilo extends Thread {
       int vueltasAnteriores =0;
       int vueltasParalelas =0;
       List<Hilo> leidos = new ArrayList<Hilo>();
-      for (Hilo ant :
-              this.anteriores) {
+      for (Hilo ant : this.anteriores) {
           vueltasAnteriores=vueltasAnteriores+ant.getContadorDisparos()/ant.getTransiciones().size();
           for (Hilo post:
                ant.posteriores) {

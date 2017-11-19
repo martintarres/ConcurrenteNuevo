@@ -1,5 +1,4 @@
 import java.util.*;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 
 public class Monitor {
@@ -14,10 +13,10 @@ public class Monitor {
     private Matriz VectorAnd;
     private Matriz VectorHistorialSensibilizadas;
     private List<Hilo> Vc;  // Lista de hilos encolados porque sus transiciones no estaban sensibilizadas
-    private int m;
+
     private Hilo hiloDespertado;
     private Log log;
-    private boolean cambio;
+    private static boolean cambio;
     private Politica politica;
     private int MaxBuffer;
     private ListasDeDisparos listasDeDisparos;
@@ -25,6 +24,7 @@ public class Monitor {
     private boolean modoVerborragico;
 
     public Monitor(Constantes constantes,int pol) {
+        int m;
         try {
             mutex = new Semaphore(1, true);
             k = true;
@@ -181,7 +181,7 @@ public class Monitor {
                         synchronized (locker) {
 
 
-                            locker.notify();
+                            locker.notifyAll();
                             if(modoVerborragico){
                                 System.out.println(((Hilo)(Thread.currentThread())).getNombre()+ "  sale del monitor");
                             }

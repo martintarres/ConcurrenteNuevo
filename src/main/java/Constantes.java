@@ -22,12 +22,12 @@ public class Constantes {
   // por que no declare cuanto valia las plazas y las transiciones y armaba de una la mtraiz
   public Constantes() {
     try{
-      String file= "file:///";
-      String path = (new File(".")).getCanonicalPath();
+      final String file= "file:///" ;
+      final String path = (new File(".")).getCanonicalPath();
       //System.out.println("Ruta actual ");
       //System.out.println(file+path);
-      String archivo = "/archivo.html";
-      String invariantes ="/analisisInvariante.html";
+      final String archivo = "/archivo.html";
+      final String invariantes ="/analisisInvariante.html";
       //System.out.println(file+path+archivo);
       inci1 = 0;  // Para calcular numero de filas de las matrices
       inci2 = -1; // Para calcular numero de columnas de lsa matrices
@@ -37,13 +37,13 @@ public class Constantes {
      // System.out.println(file+path+archivo);
 
 
-      Lector lector = new Lector(file+path+archivo);
-      Lector lector1 = new Lector(file+path+invariantes);
+      final Lector lector = new Lector(file+path+archivo);
+      final Lector lector1 = new Lector(file+path+invariantes);
       lector.convertir();
       lector1.convertir();
 
 
-      String[][] Posterior = lector.getTabla(lector.cortar("Forwards incidence matrix I+", "Backwards incidence matrix I-"));
+      final String[][] Posterior = lector.getTabla(lector.cortar("Forwards incidence matrix I+", "Backwards incidence matrix I-"));
 
       for (int i = 0; i < 1; i++) {
         for (int j = 0; j < lector.cantidadColumnas(lector.cortar("Forwards incidence matrix I+", "Backwards incidence matrix I-")); j++) {
@@ -131,7 +131,7 @@ public class Constantes {
 */
       int[][] previa = new int[inci2][inci1];
       //System.out.println("voy a mostrar tabla previa ");
-      String[][] tablaPrevia = lector.getTabla(lector.cortar("Backwards incidence matrix I-", "Combined incidence matrix I"));
+      final String[][] tablaPrevia = lector.getTabla(lector.cortar("Backwards incidence matrix I-", "Combined incidence matrix I"));
       for (int i = 0; i < inci2 + 1; i++) {
         for (int j = 0; j < inci1 + 1; j++) {
           if (esNumero(tablaPrevia[i][j])) {
@@ -160,7 +160,7 @@ public class Constantes {
       int[][] incial = new int[inci2][1];
       //System.out.println("voy a mostrar marcado incial ");
 
-      String[][] tablaInicial = lector.getTabla(lector.cortar("Marking", "Current"));
+      final String[][] tablaInicial = lector.getTabla(lector.cortar("Marking", "Current"));
       for (int i = 0; i < lector.cantidadFilas(lector.cortar("Marking", "Current")); i++) {
         for (int j = 0; j < inci2 + 1; j++) {
 
@@ -190,10 +190,10 @@ public class Constantes {
 
       //System.out.println("voy a mostrar P invariantes ");
 
-      List <Integer> lista = new ArrayList <Integer>();
+      final List <Integer> lista = new ArrayList <Integer>();
 
 
-      String[][] PInvariantes= lector1.getTabla(lector1.cortar("P-Invariants","P-Invariant equations"));
+      final String[][] PInvariantes= lector1.getTabla(lector1.cortar("P-Invariants","P-Invariant equations"));
 
       for (int i = 0; i < lector1.cantidadFilas(lector1.cortar("P-Invariants", "P-Invariant equations")); i++) {
         for(int j=0; j< 1;j++){
@@ -209,7 +209,7 @@ public class Constantes {
       int[][] copia = new int[TotalPInva][inci2];
 
 
-      int contadorr = 0;
+
       for (int i = 0; i < TotalPInva+1; i++) {      // aca hago TotalPInva+1 porque aun no saque las letras.
         //  System.out.println("soy i " + i);         //  entonces tengo una fila mas
         for (int j = 0; j < inci2+1 ; j++) {
@@ -258,7 +258,7 @@ public class Constantes {
 
 
 
-  public static Boolean esNumero(String nume){
+  public static Boolean esNumero(final String nume){
 
     try {
       Integer.parseInt(nume);
@@ -269,7 +269,7 @@ public class Constantes {
     }
 
   }
-  public int traducir(String transicion) throws Exception{
+  public int traducir(final String transicion) throws Exception{
 
     for (int i = 0; i < nombreTransiciones.length; i++) {
       if(transicion.equals(nombreTransiciones[i])){

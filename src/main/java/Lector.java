@@ -4,24 +4,22 @@
 
 import org.jsoup.Jsoup;
 
-import javax.swing.text.html.HTMLDocument;
-import java.awt.*;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 
 public class Lector {
-    private URL urlob;
-    private StringBuffer html;
+
+    private StringBuffer html ;
     private StringBuffer textoPlano;
-    public Lector(String direccion){
+    public Lector(final String direccion){
 
         //SOLO GUARDA EN EL STRINGBUFFER HTML
         try {
             //direccion= "file:C:\\Users\\alexa\\Desktop\\PC\\ProgramacionConcurrente\\archivo.html";
             String linea=null;
-
+            URL urlob;
             urlob = new URL(direccion);
             InputStreamReader rea = new InputStreamReader(urlob.openStream());
             BufferedReader br= new BufferedReader(rea);
@@ -77,7 +75,7 @@ public class Lector {
 
     }
 
-    public StringBuffer cortar(String desde , String hasta){
+    public StringBuffer cortar(final String desde , final String hasta){
         // DEL TEXTO PLANO SOLO GUARDA LO QUE ESTE ENTRE LOS DOS STRING SIN INCLUIRLOS
         try {
 
@@ -176,7 +174,7 @@ public class Lector {
         return m-1;
     }
     public int cantidadColumnas(StringBuffer buffer){
-        // SOLO VAA SACAR LA CANTIDAD DE COLUMNAS TENIENDO EN CUENTA LA PRIMERA FILA
+        // SOLO VA A SACAR LA CANTIDAD DE COLUMNAS TENIENDO EN CUENTA LA PRIMERA FILA
         // QUERIA QUE VERIFICARA QUE EN TODAS LAS LINEAS SE MANTUVIERA LA MISMA CANTIDAD PERO ES UN VIAJE
         //int m=cantidadFilas(buffer);
         int n=0;
@@ -188,7 +186,6 @@ public class Lector {
             StringBuffer pedazo = new StringBuffer();
             int filasLeidas =0;
             int contadorSaltos=0;
-            boolean yaLeido=false;
             while((linea= br.readLine()) != null&&!(filasLeidas==2)) {
                 if(linea.trim().equals("")){
                     contadorSaltos++;
@@ -298,7 +295,5 @@ public class Lector {
 
 
     }
-    public void setDireccion(){
 
-    }
 }

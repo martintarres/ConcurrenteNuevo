@@ -1,19 +1,17 @@
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
+
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JTextField;
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.GridLayout;
 import javax.swing.SwingConstants;
 
 public class Vista extends JFrame {
-    private Politica p;
+    final Politica p;
 
-    private JPanel contentPane;
+    final JPanel contentPane;
     JLabel cantPiezasA;
     JLabel cantPiezasB;
     JLabel cantPiezasC;

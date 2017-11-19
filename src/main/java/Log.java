@@ -8,14 +8,13 @@ import java.util.List;
 public class Log {
     private File marcados;
     private File registro;
-    private String direccionMarcado;
-    private String direccionRegistro;
+    final String direccionMarcado;
+    final String direccionRegistro;
     private BufferedReader br;
-    private PrintWriter pw;
     private BufferedWriter bw;
-    private List<String> lineasLeidas;
 
-    public Log(String marcados,String registro){
+
+    public Log(final String marcados,final String registro){
         this.direccionMarcado = marcados;
         this.direccionRegistro = registro;
         this.marcados = new File(marcados);
@@ -23,6 +22,7 @@ public class Log {
 
     }
     public List<String> leerLineas(){
+        List<String> lineasLeidas;
         lineasLeidas = new ArrayList<String>();
 
         try{
@@ -35,8 +35,9 @@ public class Log {
           String linea;
             while((linea=br.readLine())!=null){
                 // Me agregaba una línea con un string vacio sino
-                if(linea.length()!=0)
-                lineasLeidas.add(linea);
+                if(linea.length()!=0) {
+                    lineasLeidas.add(linea);
+                }
             }
             return lineasLeidas;
 
@@ -55,7 +56,7 @@ public class Log {
             return lineasLeidas;
         }
     }
-    public synchronized void  escribir(String linea,File destino){
+    public synchronized void  escribir(final String linea,final File destino){
         try{
             FileWriter fw = new FileWriter(destino,true);
             //fw.write(linea);
@@ -98,7 +99,7 @@ public class Log {
             this.registro.delete();
         this.registro=new File(direccionRegistro);
     }
-    public Matriz getMarcado(String linea){
+    public Matriz getMarcado(final String linea){
         List<Integer> enteros = new ArrayList<Integer>();
         String[] partes = linea.split(" ");
         for(String parte: partes){
@@ -122,7 +123,7 @@ public class Log {
         }
     }
 
-    public void registrarBasico(Monitor m, int transicion){
+    public void registrarBasico(final Monitor m, final int transicion){
         escribir("------------------------------------------------------------------------------------------------------------------", this.getRegistro());
         escribir("\n", this.getRegistro());
         escribir("Contador de disparos : " + m.getPetri().contador, this.getRegistro());
@@ -131,7 +132,7 @@ public class Log {
 
 
     }
-    public void registrarBasico2(Monitor m, Matriz sensi, Matriz enco){
+    public void registrarBasico2(final Monitor m, final Matriz sensi, final Matriz enco){
         escribir("\n", this.getRegistro());
         escribir("Marcado Actual : ", this.getRegistro());
         escribir(m.lineaMarcados(), this.getRegistro());
@@ -151,10 +152,7 @@ public class Log {
 
 
     }
-    public void registrarCantidads(Monitor m,Integer transicion){
 
-
-    }
 
     public void registrarEXtendido(Monitor m,Matriz and, Hilo h){
         escribir(m.printHilosDeVector("Hilos en ambas  =  ", and), this.getRegistro());

@@ -5,7 +5,7 @@ import java.util.List;
  */
 public class PInvariante {
       private final int  constante;
-      private List<Integer> plazas;
+      final List<Integer> plazas;
 
       public PInvariante(List<Integer> plazas,Matriz inicial ){
           this.plazas=plazas;

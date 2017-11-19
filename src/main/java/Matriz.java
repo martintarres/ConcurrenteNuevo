@@ -1,9 +1,8 @@
-import java.util.List;
-import java.util.ArrayList;
+
 
 
 public class Matriz{
-  private int m, n;
+  final int m, n;
   int [][] matriz;
 
   public Matriz (int[][] matriz)throws MatrizException{
@@ -229,7 +228,7 @@ public class Matriz{
       }
 
     }
-    return;
+
   }
   public void or(Matriz A,Matriz B) throws Exception {
     if (A.getM() != B.getM() || A.getN() != B.getN()) {
@@ -252,7 +251,7 @@ public class Matriz{
       }
 
     }
-    return;
+
   }
   public int cantidadDeUnos() {
     int cantidad = 0;

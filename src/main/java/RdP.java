@@ -6,7 +6,7 @@ public class RdP{
   private Matriz marcadoActual;
   private Matriz incidencia;
   private Matriz incidenciaPrevia;
-  private Matriz incidenciaPosterior;
+
   public Matriz vectorSensibilizadas;
   private Matriz MInvariantes;
   public List<PInvariante> listaPI;
@@ -22,7 +22,7 @@ public class RdP{
 
       this.incidenciaPrevia = incidenciaPrevia;
 
-      this.incidenciaPosterior = incidenciaPosterior;
+      //this.incidenciaPosterior = incidenciaPosterior;
 
       this.MInvariantes = MInvariantes;
       this.listaPI = new ArrayList<PInvariante>();
@@ -38,7 +38,7 @@ public class RdP{
       }
 
 
-      this.incidencia = Matriz.suma(this.incidenciaPosterior,Matriz.porEscalar(this.incidenciaPrevia,-1));
+      this.incidencia = Matriz.suma(incidenciaPosterior,Matriz.porEscalar(this.incidenciaPrevia,-1));
      // System.out.println("matriz incidenciaaaa");
      // incidencia.imprimir();
      // System.out.println("");
@@ -65,9 +65,6 @@ public class RdP{
     return this.MInvariantes;
   }
 
-  public List<Integer> sensibilizadas(){
-    return null;
-  }
   public Matriz marcadoInicial(){
     return this.marcadoInicial;
   }
