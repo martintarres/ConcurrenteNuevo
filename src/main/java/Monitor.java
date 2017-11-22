@@ -85,8 +85,9 @@ public class Monitor {
 
             mutex.acquire();
             k = true;
-            this.log.escribir(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", this.log.getRegistro());
             this.log.escribir(((Hilo)(Thread.currentThread())).getNombre()+ "  obtiene el mutex.",this.log.getRegistro());
+            this.log.escribir(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", this.log.getRegistro());
+
 
             while (k == true) {
                 if(modoVerborragico){
