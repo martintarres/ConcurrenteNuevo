@@ -78,12 +78,15 @@ public class Monitor {
     public  void dispararTransicion(Integer transicion) {
         try {
             //synchronized (mutex)
+            this.log.escribir(((Hilo)(Thread.currentThread())).getNombre()+ "  pide el mutex.",this.log.getRegistro());
             if(modoVerborragico){
                 System.out.println(((Hilo)(Thread.currentThread())).getNombre()+ "  pide el mutex.");
             }
 
             mutex.acquire();
             k = true;
+            this.log.escribir(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", this.log.getRegistro());
+            this.log.escribir(((Hilo)(Thread.currentThread())).getNombre()+ "  obtiene el mutex.",this.log.getRegistro());
 
             while (k == true) {
                 if(modoVerborragico){
@@ -101,6 +104,7 @@ public class Monitor {
 
 
                 if (k == true) {
+                    this.log.escribir(((Hilo)(Thread.currentThread())).getNombre()+ "  dispara la transicion  "+traducirDisparo(transicion),this.log.getRegistro());
                     if(modoVerborragico){
                         System.out.println(((Hilo)(Thread.currentThread())).getNombre()+ "  dispara la transicion  "+traducirDisparo(transicion) );
                     }
@@ -139,7 +143,7 @@ public class Monitor {
                         politica.PiezaC++;
                         cambio = true;
                     }
-                    log.registrarBasico(this, transicion);
+                    log.registrarBasico(this, transicion, true);
                     //this.log.escribir("Contador "+ this.getPetri().contador,log.getRegistro());
                     if (cambio) {
                         this.log.escribir("Cantidad de piezas producidas:  " + "A = " + politica.PiezaA + "   B = " + politica.PiezaB + "   C = " + politica.PiezaC, log.getRegistro());
@@ -184,6 +188,8 @@ public class Monitor {
                             locker.notifyAll();
                             if(modoVerborragico){
                                 System.out.println(((Hilo)(Thread.currentThread())).getNombre()+ "  sale del monitor");
+                                this.log.escribir("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<", this.log.getRegistro());
+//
                             }
                             return;
 
@@ -201,6 +207,10 @@ public class Monitor {
                     }
 
                 } else {
+                    log.registrarBasico(this, transicion, false);
+                    log.registrarBasico2(this, VectorSensibilizados, VectorEncolados);
+
+
                     if(modoVerborragico){
                         System.out.println(((Hilo)(Thread.currentThread())).getNombre()+ "  no pudo disparar la transicion  "+ traducirDisparo(transicion));
                     }
@@ -223,6 +233,10 @@ public class Monitor {
                         if(modoVerborragico){
                             System.out.println(((Hilo)(Thread.currentThread())).getNombre()+ "  devuelve el mutex");
                         }
+                        this.log.escribir(((Hilo)(Thread.currentThread())).getNombre()+ "  devuelve el mutex", this.log.getRegistro());
+
+                        this.log.escribir("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<", this.log.getRegistro());
+
                         mutex.release();
                         if(modoVerborragico){
                             System.out.println(((Hilo)(Thread.currentThread())).getNombre()+ "  procede a dormir");
@@ -238,6 +252,9 @@ public class Monitor {
             if(modoVerborragico){
                 System.out.println(((Hilo)(Thread.currentThread())).getNombre()+ "  devuelve el mutex");
             }
+            this.log.escribir(((Hilo)(Thread.currentThread())).getNombre()+ "  devuelve el mutex",this.log.getRegistro());
+            this.log.escribir("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<", this.log.getRegistro());
+
 
 
             mutex.release();

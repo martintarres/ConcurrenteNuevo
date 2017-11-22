@@ -123,16 +123,23 @@ public class Log {
         }
     }
 
-    public void registrarBasico(final Monitor m, final int transicion){
-        escribir("------------------------------------------------------------------------------------------------------------------", this.getRegistro());
+    public synchronized void registrarBasico(final Monitor m, final int transicion,boolean bool){
+        //escribir("------------------------------------------------------------------------------------------------------------------", this.getRegistro());
         escribir("\n", this.getRegistro());
         escribir("Contador de disparos : " + m.getPetri().contador, this.getRegistro());
         escribir("\n", this.getRegistro());
-        escribir(((Hilo) (Thread.currentThread())).getNombre() + " ha disparado la transicion  : " + m.traducirDisparo(transicion), this.getRegistro());
+        String cadena;
+        if(bool){
+            cadena= "  ha disparado la transicion  : ";
+        }
+        else {
+            cadena = "  no ha podido disparar la transicion  : ";
+        }
+        escribir(((Hilo) (Thread.currentThread())).getNombre() + cadena + m.traducirDisparo(transicion), this.getRegistro());
 
 
     }
-    public void registrarBasico2(final Monitor m, final Matriz sensi, final Matriz enco){
+    public synchronized void registrarBasico2(final Monitor m, final Matriz sensi, final Matriz enco){
         escribir("\n", this.getRegistro());
         escribir("Marcado Actual : ", this.getRegistro());
         escribir(m.lineaMarcados(), this.getRegistro());
