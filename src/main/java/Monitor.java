@@ -105,7 +105,7 @@ public class Monitor {
 
 
                 if (k == true) {
-                    this.log.escribir(((Hilo)(Thread.currentThread())).getNombre()+ "  dispara la transicion  "+traducirDisparo(transicion),this.log.getRegistro());
+                    //this.log.escribir(((Hilo)(Thread.currentThread())).getNombre()+ "  dispara la transicion  "+traducirDisparo(transicion),this.log.getRegistro());
                     if(modoVerborragico){
                         System.out.println(((Hilo)(Thread.currentThread())).getNombre()+ "  dispara la transicion  "+traducirDisparo(transicion) );
                     }
@@ -208,13 +208,14 @@ public class Monitor {
                     }
 
                 } else {
-                    log.registrarBasico(this, transicion, false);
-                    log.registrarBasico2(this, VectorSensibilizados, VectorEncolados);
 
 
                     if(modoVerborragico){
                         System.out.println(((Hilo)(Thread.currentThread())).getNombre()+ "  no pudo disparar la transicion  "+ traducirDisparo(transicion));
                     }
+                    log.registrarBasico(this, transicion, false);
+                    log.registrarBasico2(this, VectorSensibilizados, VectorEncolados);
+
                     assert(!this.getPetri().transicionSensibilizada(transicion,SensiPrevio));
                     //assert (false);
                     assert (previo.esIgual(getPetri().marcadoActual()));
