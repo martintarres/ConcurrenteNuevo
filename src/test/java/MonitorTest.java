@@ -1,14 +1,9 @@
 
 import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
-
-import javax.sound.sampled.Line;
-
 import static org.junit.Assert.*;
 /**
  * Created by YepezHinostroza on 22/11/2017.
@@ -230,14 +225,7 @@ public class MonitorTest {
 
 
     }
-    @Test
-    public void contadorDisparos(){
 
-    }
-
-    public void quienDevuelve(){
-
-    }
     @Test
     public void queNoSerepita(){
         //Encararlo con un or por cada hilo encolado o sensi o ambas
@@ -294,6 +282,14 @@ public class MonitorTest {
             }
 
         }
+
+    }
+    @Test
+    public void contadorDisparos(){
+
+    }
+    @Test
+    public void quienDevuelve(){
 
     }
 

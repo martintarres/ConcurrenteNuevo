@@ -10,22 +10,24 @@ public class RdP{
   public Matriz vectorSensibilizadas;
   private Matriz MInvariantes;
   public List<PInvariante> listaPI;
+  public Constantes constantes;
+  public String lineaMarcados;
 
   int contador;
 
-  public RdP(Matriz marcadoInicial,Matriz incidenciaPrevia,Matriz incidenciaPosterior,Matriz MInvariantes){
+  public RdP(Constantes constantes){
     try{
       //if (mInicial==null) throw
-      this.marcadoInicial = marcadoInicial;
+        this.constantes=constantes;
+      this.marcadoInicial = constantes.marcadoInicial;
 
-      this.marcadoActual = marcadoInicial;
+      this.marcadoActual = constantes.marcadoInicial;
 
-      this.incidenciaPrevia = incidenciaPrevia;
-
+      this.incidenciaPrevia = constantes.incidenciaPrevia;
       //this.incidenciaPosterior = incidenciaPosterior;
-
+/*
       this.MInvariantes = MInvariantes;
-      this.listaPI = new ArrayList<PInvariante>();
+      this.listaPI = new ArrayList<constantes.PInvariante>();
       crearListaInvariantes();
       System.out.println("Lista Invariantes");
       for(PInvariante pi: this.listaPI){
@@ -35,17 +37,12 @@ public class RdP{
         }
         //System.out.println(plazas + " = " +pi.cantidadTokens(marcadoInicial));
         System.out.println(plazas + " = " +pi.getConstante());
-      }
+      }*/
 
 
-      this.incidencia = Matriz.suma(incidenciaPosterior,Matriz.porEscalar(this.incidenciaPrevia,-1));
-     // System.out.println("matriz incidenciaaaa");
-     // incidencia.imprimir();
-     // System.out.println("");
+
+      this.incidencia = Matriz.suma(constantes.incidenciaPosterior,Matriz.porEscalar(this.incidenciaPrevia,-1));
       this.vectorSensibilizadas = Sensibilizadas(incidenciaPrevia, marcadoInicial);
-      //System.out.println("vector sensiblizadas");
-      //vectorSensibilizadas.imprimir();
-      //System.out.println("");
       System.out.println ("transiciones iniciales");
       vectorSensibilizadas.imprimir();
       contador=0;
@@ -131,7 +128,7 @@ public class RdP{
         return new Matriz(sensibilizadas);
     }
     catch(Exception e){
-      throw new RdPException("No se ha podido obtener las transiciones disponibles");
+      throw new RdPException("No se ha podido obtener las transiciones disponibles"+e.getMessage());
     }
 
 
@@ -204,6 +201,21 @@ public class RdP{
     }
     return true;
   }
+    public String lineaMarcados(){
+        String cadena = "";
+
+        for (int i = 0; i <constantes.nombreMarcados.length; i++) {
+            String campo = constantes.nombreMarcados[i];
+
+            while(campo.length()<4){
+                campo= " "+campo;
+            }
+            cadena=cadena+campo;
+
+        }
+
+        return cadena;
+    }
 
 
 

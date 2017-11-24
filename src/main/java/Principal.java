@@ -31,8 +31,8 @@ public class Principal {
         monitor.getPetri().marcadoActual().transpuesta().imprimir();
         System.out.println("Matriz Incidencia: ");
         monitor.getPetri().getIncidencia().imprimir();
-        System.out.println("Matriz P Invariantes: ");
-        monitor.getPetri().getMInvariantes().imprimir();
+//        System.out.println("Matriz P Invariantes: ");
+//        monitor.getPetri().getMInvariantes().imprimir();
 
 
 

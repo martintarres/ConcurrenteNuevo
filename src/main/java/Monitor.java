@@ -29,7 +29,8 @@ public class Monitor {
             mutex = new Semaphore(1, true);
             k = true;
             this.constantes = constantes;
-            petri = new RdP(constantes.marcadoInicial, constantes.incidenciaPrevia, constantes.incidenciaPosterior, constantes.PInvariante);
+            //petri = new RdP(constantes.marcadoInicial, constantes.incidenciaPrevia, constantes.incidenciaPosterior, constantes.PInvariante);
+            petri = new RdP(constantes);
             listaHilos = new ArrayList<Hilo>();
             mapa = new HashMap<Integer, Hilo>();
 
@@ -349,21 +350,6 @@ public class Monitor {
         String transicion = constantes.nombreTransiciones[i];
         return transicion;
 
-    }
-    public String lineaMarcados(){
-        String cadena = "";
-
-        for (int i = 0; i <constantes.nombreMarcados.length; i++) {
-            String campo = constantes.nombreMarcados[i];
-
-            while(campo.length()<4){
-                campo= " "+campo;
-            }
-            cadena=cadena+campo;
-
-        }
-
-        return cadena;
     }
 
     public boolean BufferOverflow() {    //231
