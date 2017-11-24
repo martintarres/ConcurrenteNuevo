@@ -54,7 +54,7 @@ public class MonitorTest {
 
     @Test
     public void encolados(){
-        /*  Verifica que en la lista de encolados se encuentren solo
+        /*  Analiza sobre la linea Hilos encolados en contraposición de los intento fallidos de disparo e hilo despertado.
         *   Botonea en el caso que haya un encolado que falta  como también que sobre un encolado
         * */
         List<String> encolados= new ArrayList<String>();
@@ -160,10 +160,86 @@ public class MonitorTest {
                 }
                 assertTrue(cadena+"\n"+Lineas.get(i),autorizado.equals(disparado[0]));
             }
-
-
-
         }
+    }
+
+    @Test
+    public void hiloDespertadoEncolado(){
+        /*Verifica que sólo se haya despertado un hilo que estaba sensibilizado y encolado(que esté en ambas) .
+         */
+        String[] casteado= new String[2];
+        String cadena = "";
+        String hiloDespertado="";
+        boolean encotrado=false;
+        String[] hilos={""};
+        String[] hilos2={""};
+        for (int i = 0; i < Lineas.size(); i++) {
+            if (Lineas.get(i).contains("Contador de disparos :")) {
+                cadena = Lineas.get(i);
+            }
+            if (Lineas.get(i).contains("Hilos en ambas")) {
+                casteado = Lineas.get(i).split("=");
+                hilos = casteado[1].split("\\|\\|");
+                hilos2 = new String[hilos.length - 1];
+            }
+            if(Lineas.get(i).contains("Hilo despertado  =")){
+                encotrado=false;
+                casteado=Lineas.get(i).split("=");
+                hiloDespertado=casteado[1].trim();
+                for (int j = 0; j <hilos.length-1; j++) {
+                    hilos2[j]=hilos[j].trim();
+                }
+                for (int j = 0; j < hilos2.length; j++) {
+                    if (hilos2[j].equals(hiloDespertado)){
+                        encotrado=true;
+                        break;
+                    }
+                }
+                assertTrue(cadena+"\n"+"No se pudo haber despertado el hilo "+ hiloDespertado,encotrado);
+            }
+        }
+    }
+
+    @Test
+    public void hiloDespertadoSensibilizado(){
+        /*Si se despertó un hilo, tiene que haber podido disparar
+         */
+        String[] casteado= new String[2];
+        String cadena = "";
+        String hiloDespertado="";
+        String hiloDisparado="";
+        boolean despertoAlguien=false;
+        String[] hilos={""};
+        String[] hilos2={""};
+        for (int i = 0; i < Lineas.size(); i++) {
+            if (Lineas.get(i).contains("Contador de disparos :")) {
+                cadena = Lineas.get(i);
+            }
+
+            if (Lineas.get(i).contains("Hilo despertado  =")) {
+                casteado = Lineas.get(i).split("=");
+                hiloDespertado = casteado[1].trim();
+                despertoAlguien=true;
+            }
+            if(despertoAlguien&&(Lineas.get(i).contains("ha disparado la transicion")||Lineas.get(i).contains("no ha podido disparar"))){
+                despertoAlguien=false;
+
+                assertFalse(cadena+"\n"+" No se pudo disparar el siguiente hilo despertado:"+ hiloDisparado,Lineas.get(i).contains("no"));
+            }
+        }
+
+
+    }
+    @Test
+    public void contadorDisparos(){
+
+    }
+
+    public void quienDevuelve(){
+
+    }
+
+    public void queNoSerepita(){
 
     }
 
