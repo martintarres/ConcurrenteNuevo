@@ -238,8 +238,62 @@ public class MonitorTest {
     public void quienDevuelve(){
 
     }
-
+    @Test
     public void queNoSerepita(){
+        //Encararlo con un or por cada hilo encolado o sensi o ambas
+        String cadena = "";
+        String[] casteado= new String[2];
+        for (int i = 0; i < Lineas.size(); i++) {
+            if (Lineas.get(i).contains("Contador de disparos :")) {
+                cadena = Lineas.get(i);
+            }
+
+            if (Lineas.get(i).contains("Hilos Sensibilizados  =")||Lineas.get(i).contains("Hilos Encolados  =")||Lineas.get(i).contains("Hilos en ambas  =")) {
+                casteado = Lineas.get(i).split("=");
+                String [] hilos = casteado[1].split("\\|\\|");
+                List<String> hilos2= new ArrayList<String>();
+                for (int j = 0; j < hilos.length-1; j++) {
+                    hilos2.add(hilos[j].trim());
+                }
+                for (String hilo : hilos2) {
+                    int cantidad=0;
+                    for (String hiloPivote : hilos2) {
+                        if(hilo.equals(hiloPivote)){
+                            cantidad++;
+                        }
+
+                    }
+                    assertTrue(cadena+"\n"+"El hilo "+ hilo+ "   se repite en: "+ Lineas.get(i),cantidad==1);
+
+                }
+            }
+
+        }
+
+    }
+
+    @Test
+    public void bufferLimitado(){
+        //Deberia hacer la forma que la cantidad maxima no sea hardcodeada...
+
+        String cadena = "";
+        String[] casteado= new String[2];
+        for (int i = 0; i < Lineas.size(); i++) {
+            if (Lineas.get(i).contains("Contador de disparos :")) {
+                cadena = Lineas.get(i);
+            }
+
+            if (Lineas.get(i).contains("Hilos Encolados  =")) {
+                casteado = Lineas.get(i).split("=");
+                String [] hilos = casteado[1].split("\\|\\|");
+                List<String> hilos2= new ArrayList<String>();
+
+                assertTrue(cadena+"\n"+ "Se ha excedido el buffer. Cantidad ="+ (hilos.length-1),hilos.length-1<9);
+
+
+            }
+
+        }
 
     }
 
