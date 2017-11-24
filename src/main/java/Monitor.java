@@ -208,6 +208,8 @@ public class Monitor {
                     }
 
                 } else {
+                    VectorEncolados.getMatriz()[0][transicion] = 1;
+                    Vc.add((Hilo) Thread.currentThread());
 
 
                     if(modoVerborragico){
@@ -225,7 +227,7 @@ public class Monitor {
                     assert BufferOverflow();
                     assert (cantidadDeUnos(VectorEncolados) < MaxBuffer);
                     assert encoladosRepetidos();
-                    VectorEncolados.getMatriz()[0][transicion] = 1;
+
                     assert (Buffersize + 1 == cantidadDeUnos(VectorEncolados));
 
                     assert unicaTransicionPorHilo(VectorEncolados);

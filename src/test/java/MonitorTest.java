@@ -53,20 +53,62 @@ public class MonitorTest {
     }
 
     @Test
-    public void devolverMutex(){
+    public void encolados(){
+        /*  Verifica que en la lista de encolados se encuentren solo
+        *   Botonea en el caso que haya un encolado que falta  como también que sobre un encolado
+        * */
+        List<String> encolados= new ArrayList<String>();
+        String[] casteado= new String[2];
+        String cadena="";
+        boolean encontrado=false;
+        for (int i = 0; i < Lineas.size(); i++) {
+            if(Lineas.get(i).contains("Contador de disparos :")){
+                cadena=Lineas.get(i);
+            }
+            if(Lineas.get(i).contains("no ha podido disparar")){
+                casteado=Lineas.get(i).split("no ha podido disparar");
+                encolados.add(casteado[0].trim());
+                //System.out.println(encolados);
+            }
+            if(Lineas.get(i).contains("Hilo despertado")){
+                casteado=Lineas.get(i).split("=");
+                encolados.remove(casteado[1].trim());
+                //System.out.println(encolados);
+            }
+            if (Lineas.get(i).contains("Hilos Encolados")){
+                casteado= Lineas.get(i).split("=");
+                String [] hilos = casteado[1].split("\\|\\|");
+                String [] hilos2 = new String[hilos.length-1];
 
-    }
-    @Test
-    public void despertar(){
+                for (int j = 0; j <hilos.length-1; j++) {
+                    hilos2[j]=hilos[j].trim();
+                }
+                for (String enco: encolados) {
+                    encontrado=false;
+                    for (int j = 0; j < hilos2.length; j++) {
+                        if(enco.equals(hilos2[j])){
+                            encontrado=true;
+                            break;
+                        }
 
-    }
+                    }
+                    assertTrue(cadena+"\n"+"Hilo no encontrado encolado = "+ enco,encontrado);
 
-    @Test
-    public void dormir(){
+                }
+                for (int j = 0; j < hilos2.length; j++) {
+                    encontrado=false;
+                    for (String enco: encolados) {
+                        if(enco.equals(hilos2[j])){
+                        encontrado=true;
+                        break;
+                    }
+                    }
+                    assertTrue(cadena+"\n"+"Hilo que no debiera estar encolado = "+ hilos2[j],encontrado);
+                }
 
-    }
-    @Test
-    public void prioridadEncolado(){
+            }
+
+        }
         
 
     }
