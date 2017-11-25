@@ -80,8 +80,55 @@ public class RdPTest {
     @Test
     public void verificarMarcado(){
         /*
-        Verifica que se obtuvo el marcado por el disparo de esa transición
+       *Verifica que se obtuvo ese marcado por el disparo de esa transición y el marcado previo
+        *No importa si estaba sensibilizado o no
          */
+        String cadena = "";
+        String[] casteado={};
+        String transicion="";
+        Matriz marcadoPrevio=petri.marcadoInicial();
+        Matriz marcadoActual=petri.marcadoInicial();
+        Matriz marcadoPrueba=petri.marcadoInicial();
+        boolean disparado=false;
+
+        for (int i = 0; i < Lineas.size(); i++) {
+            try{
+                if (Lineas.get(i).contains("Contador de disparos :")) {
+                    cadena = Lineas.get(i);
+                }
+                if (Lineas.get(i).contains(petri.lineaMarcados())){
+                    marcadoPrevio=marcadoActual;
+                    marcadoActual=convertirMarcado(Lineas.get(i+1)).transpuesta();
+                    if(disparado){
+                        marcadoPrueba=Matriz.suma(marcadoPrevio,Matriz.obtenerColumna(petri.getIncidencia(),traducirTransicion(transicion,constantes)));
+                        assertTrue(cadena+"\n"+"Marcado Actual tuvo que hber sido ="+"\n"+
+                                petri.lineaMarcados()+"\n"+marcadoPrevio,marcadoActual.esIgual(marcadoPrueba));
+
+                    }
+                    else{
+                        assertTrue(cadena+"\n"+"Marcado Actual tuvo que hber sido ="+"\n"+
+                                petri.lineaMarcados()+"\n"+marcadoPrevio,marcadoActual.esIgual(marcadoPrevio));
+                    }
+
+
+                }
+                if(Lineas.get(i).contains("ha disparado la transicion")||Lineas.get(i).contains("no ha podido disparar")){
+                    casteado = Lineas.get(i).split(":");
+                    transicion= casteado[1].trim();
+                    if(Lineas.get(i).contains("no")){
+                        disparado=false;
+                    }
+                    else{
+                        disparado=true;
+                    }
+                }
+
+            }
+            catch(Exception e){
+
+            }
+
+        }
 
     }
 
