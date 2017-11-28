@@ -56,7 +56,7 @@ public class leerArchivo {
             for (String s :
                     cast) {
                 if(!s.trim().contains("\n")){
-                    cast2.add(s);
+                    cast2.add(s.trim());
                 }
             }
             for (int i = 0; i < cast2.size(); i++) {
@@ -70,9 +70,9 @@ public class leerArchivo {
             }
             for (List l :
                     ListaPInvariantes) {
-                System.out.println(l);
+                //System.out.println(l);
             }
-            //System.out.println("Elemento de la lista"+"\n"+ListaPInvariantes.get(0));
+            System.out.println("Elemento de la lista"+"\n"+ListaPInvariantes.get(0));
         }
         catch(Exception e ){
 
