@@ -29,7 +29,12 @@ public class leerArchivo {
             final Lector lector1 = new Lector(file+path+invariantes);
 
             lector1.convertir();
-            System.out.println(lector1.getTextoPlano());
+            //System.out.println(lector1.getTextoPlano());
+
+            StringBuffer PInv = lector1.cortar("P-Invariant equations","Analysis time:");
+            System.out.println(PInv);
+
+
 
         }
         catch(Exception e ){
