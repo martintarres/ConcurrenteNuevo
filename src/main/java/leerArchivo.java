@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class leerArchivo {
 
@@ -12,6 +14,7 @@ public class leerArchivo {
 
     public static void main(String [] args)  {
         try{
+            List<String> ListaPInvariantes= new ArrayList<String>();
             URL urlob;
             String codigohtml;
             String codigocomun = null;
@@ -29,10 +32,17 @@ public class leerArchivo {
             final Lector lector1 = new Lector(file+path+invariantes);
 
             lector1.convertir();
-            //System.out.println(lector1.getTextoPlano());
 
-            StringBuffer PInv = lector1.cortar("P-Invariant equations","Analysis time:");
-            System.out.println(PInv);
+            System.out.println(lector1.getTextoPlano());
+
+
+            String [] casteado = lector1.getTextoPlano().toString().split("P-Invariant equations");
+            casteado = casteado[1].split("Analysis time:");
+
+            System.out.println("Voy a imprimir a continuacion sólo la parte correspondiente a las ecuaciones P Invariantes obtenidas del texcto plano" +
+                    ", la cual fue obtenida del html analisisInvariante.html" +
+                    "                     Martin trolo");
+            System.out.println(casteado[0]);
 
 
 
