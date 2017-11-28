@@ -1,5 +1,6 @@
 import org.jsoup.Jsoup;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -10,75 +11,29 @@ public class leerArchivo {
 
 
     public static void main(String [] args)  {
-        URL urlob;
-        String codigohtml;
-        String codigocomun = null;
-        boolean paso1= false;
-        String matriz1;
+        try{
+            URL urlob;
+            String codigohtml;
+            String codigocomun = null;
+            boolean paso1= false;
+            String matriz1;
 
-       // File file= new File("/home/martin/Documentos/ProgramacionConcurrente/archivo.html");
+            // File file= new File("/home/martin/Documentos/ProgramacionConcurrente/archivo.html");
 
-        try {
+            final String file= "file:///" ;
+            final String path = (new File(".")).getCanonicalPath();
 
-            urlob = new URL("file:///home/martin/Documentos/ProgramacionConcurrente/archivo.html");
-            InputStreamReader rea = new InputStreamReader(urlob.openStream());
-            BufferedReader br= new BufferedReader(rea);
-
-            while((codigohtml= br.readLine()) != null) {
+            final String invariantes ="/analisisInvariante.html";
 
 
-                //  System.out.println(codigohtml);
+            final Lector lector1 = new Lector(file+path+invariantes);
 
-
-                codigocomun = as(codigohtml);
-
-                //   if(codigocomun.contains("Forwards incidence matrix I+")){
-
-                //   }
-
-                if (codigocomun.contains("Forwards")) {
-
-                    paso1 = true;
-                }
-
-                    if(paso1==true) {
-
-                     //   while (!(codigocomun.contains("Backwards"))) {
-
-                            // if (codigocomun.contains("Backwards")) {
-
-                            // br.close();
-                            //} else {
-                            System.out.println(codigocomun);
-
-                            if(codigocomun.contains("Backwards")){
-                                br.close();
-                            }
-                       // }
-
-                    //}
-                /*
-                if( esNumero(codigocomun)){
-
-                    br.close();
-
-                }else {
-
-                    System.out.println(codigocomun);
-                }
-                   */
-                }
-
-            }
-
-
-
+            lector1.convertir();
+            System.out.println(lector1.getTextoPlano());
 
         }
-        catch (MalformedURLException e){
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        catch(Exception e ){
+
         }
 
 
