@@ -68,11 +68,13 @@ public class leerArchivo {
                     i=toIndex+1;
                 }
             }
+
+            System.out.println("Imprimiendo las lineas (Lista de String ) de losP Invairantes");
             for (List l :
                     ListaPInvariantes) {
-                //System.out.println(l);
+                System.out.println(l);
             }
-            System.out.println("Elemento de la lista"+"\n"+ListaPInvariantes.get(0));
+            //System.out.println("Elemento de la lista"+"\n"+ListaPInvariantes.get(0));
         }
         catch(Exception e ){
 
