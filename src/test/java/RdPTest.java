@@ -1,6 +1,10 @@
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,8 +20,17 @@ public class RdPTest {
 
     @Before
     public void setUp() throws Exception {
-            Log lector = new Log("C:\\Users\\alexa\\Desktop\\ConcurrenteNuevo\\registro.txt",
-                    "\"C:\\\\Users\\\\alexa\\\\Desktop\\\\ConcurrenteNuevo\\\\\\registroVacio.txt\"");
+        final String file= "" ;
+        final String path = (new File(".")).getCanonicalPath();
+        final String archivomarcados = "/marcados.txt";
+        final String registro ="/registro.txt";
+
+        /*Log lector = new Log("C:\\Users\\alexa\\Desktop\\ConcurrenteNuevo\\registro.txt",
+                "\"C:\\\\Users\\\\alexa\\\\Desktop\\\\ConcurrenteNuevo\\\\\\registroVacio.txt\"");
+       */
+
+        System.out.println(file+path+archivomarcados);
+            Log lector = new Log(file+path+registro, "");
             // creo una lista de as lineas
             Lineas = lector.leerLineas();
             constantes = new Constantes();
@@ -132,33 +145,94 @@ public class RdPTest {
 
     }
 
-    public Matriz convertirMarcado(String Linea) throws Exception{
-        try{
+    @Test
+    public void pInvariantes() throws Exception {
+        String cadena = "";
+        Matriz marcadoActual = null;
+        for (int i = 0; i < Lineas.size() - 1; i++) {
+            if (Lineas.get(i).contains("Contador de disparos :")) {
+                cadena = Lineas.get(i);
+
+            }
+            if (Lineas.get(i).contains(petri.lineaMarcados())) {
+                marcadoActual = convertirMarcado(Lineas.get(i + 1)).transpuesta();
+                System.out.println("Voy a mostrar el marcado actual que estoy comprobando");
+                marcadoActual.transpuesta().imprimir();
+
+
+                List<String> prodInterno = new ArrayList<String>();
+
+                int[][] matrizPInvariante = new int[1][constantes.PInvariante.getN()];
+
+                for (int ii = 0; ii < constantes.PInvariante.getM(); ii++) {
+                    for (int j = 0; j < constantes.PInvariante.getN(); j++) {
+                        matrizPInvariante[0][j] = constantes.PInvariante.getMatriz()[ii][j];
+                    }
+
+
+                    Matriz matrizPInva = null;
+                    try {
+                        matrizPInva = new Matriz(matrizPInvariante);
+                    } catch (MatrizException e) {
+                        e.printStackTrace();
+                    }
+
+                    int resultado = 0;
+
+                    for (int g = 0; g < constantes.PInvariante.getN(); g++) {
+                        int multiplicacion = 0;
+                        multiplicacion = marcadoActual.getMatriz()[g][0] * matrizPInva.getMatriz()[0][g];
+                        resultado = resultado + multiplicacion;
+                    }
+                    prodInterno.add(Integer.toString(resultado));
+                }
+
+
+                System.out.println("voy a mostrar lista de resultado del producto interno");
+                System.out.println(prodInterno);
+
+              //  System.out.println("Voy a mostrar lista de resultado de ecuaciones");
+              //  System.out.println(constantes.fin);
+
+
+                assertEquals(prodInterno, constantes.PInvariantes);
+
+                System.out.println("");
+                System.out.println("");
+                System.out.println("");
+
+            }
+        }
+    }
+        ///////////////////////////////////////
+
+    public Matriz convertirMarcado(String Linea) throws Exception {
+        try {
             List<Integer> enteros = new ArrayList<>();
-            String[] casteado= Linea.split(" ");
+            String[] casteado = Linea.split(" ");
             for (String numero :
                     casteado) {
-                if(constantes.esNumero(numero)){
+                if (constantes.esNumero(numero)) {
                     enteros.add(Integer.parseInt(numero));
                 }
             }
 
-            int[][] arreglo= new int[1][enteros.size()];
-            for (int i = 0; i <enteros.size() ; i++) {
-                arreglo[0][i]=enteros.get(i);
+            int[][] arreglo = new int[1][enteros.size()];
+            for (int i = 0; i < enteros.size(); i++) {
+                arreglo[0][i] = enteros.get(i);
 
             }
-            Matriz marcado= new Matriz(arreglo);
+            Matriz marcado = new Matriz(arreglo);
             return marcado;
 
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             System.err.println("No se ha podido crear la matriz");
             return null;
 
         }
 
     }
+
 
     public int traducirTransicion(String transicion, Constantes constantes) throws Exception{
 
@@ -172,4 +246,5 @@ public class RdPTest {
 
     }
 
-}
+
+    }

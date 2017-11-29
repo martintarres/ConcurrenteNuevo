@@ -2,9 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * Created by YepezHinostroza on 14/11/2017.
- */
+
 public class ProductorConsumidor {
     public static void main(String[] args){
         System.out.println("Sistema de manufacturazion automatizado"+"\n");
