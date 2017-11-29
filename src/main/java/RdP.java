@@ -8,7 +8,7 @@ public class RdP{
   private Matriz incidenciaPrevia;
 
   public Matriz vectorSensibilizadas;
-  private Matriz MInvariantes;
+  public Matriz MInvariantes;
   public List<PInvariante> listaPI;
   public Constantes constantes;
   public String lineaMarcados;

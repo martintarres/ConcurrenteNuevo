@@ -1,3 +1,4 @@
+import java.io.File;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
@@ -64,10 +65,15 @@ public class Monitor {
             this.prioridadDespertado=false;
             this.hiloDespertado=null;
 
-            this.log = new Log("C:\\Users\\alexa\\Desktop\\ConcurrenteNuevo\\marcados.txt",
-                    "C:\\Users\\alexa\\Desktop\\ConcurrenteNuevo\\registro.txt");
-            log.limpiar();
+            final String file= "" ;
+            final String path = (new File(".")).getCanonicalPath();
+            final String archivomarcados = "/marcados.txt";
+            final String invariantesregistro ="/registro.txt";
 
+
+            this.log = new Log(file+path+archivomarcados, file+path+invariantesregistro);
+            log.limpiar();
+            //this.log = new Log(file+path+archivomarcados,file+path+archivoregistro);
 
         } catch (Exception e) {
             System.err.println("No se ha podido inicializar el monitor");
@@ -94,10 +100,12 @@ public class Monitor {
                 if(modoVerborragico){
                     System.out.println(((Hilo)(Thread.currentThread())).getNombre()+ "  obtiene el mutex.");
                 }
+
                 if (prioridadDespertado) {
                     assert (Thread.currentThread() == hiloDespertado);
                     this.prioridadDespertado = false;
                 }
+
                 Hilo actual = (Hilo) (Thread.currentThread());
                 Matriz previo = this.petri.marcadoActual().clonar();
                 Matriz SensiPrevio = this.VectorSensibilizados.clonar();

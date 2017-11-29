@@ -1,7 +1,11 @@
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-import java.io.File;
+
+import static org.jsoup.nodes.Document.OutputSettings.Syntax.html;
 
 public class Constantes {
 
@@ -18,16 +22,21 @@ public class Constantes {
   public int inci1;
   public int inci2;
   public int TotalPInva;
+  List PInvariantes;        // esta lista guarda el resultado de los p invariantes
+  String file;
+  String path;
+  String archivo;
+  String invariantes;
 
   // por que no declare cuanto valia las plazas y las transiciones y armaba de una la mtraiz
   public Constantes() {
     try{
-      final String file= "file:///" ;
-      final String path = (new File(".")).getCanonicalPath();
+      file= "file:///" ;
+      path = (new File(".")).getCanonicalPath();
       //System.out.println("Ruta actual ");
       //System.out.println(file+path);
-      final String archivo = "/archivo.html";
-      final String invariantes ="/analisisInvariante.html";
+      archivo = "/archivo.html";
+      invariantes ="/analisisInvariante.html";
       //System.out.println(file+path+archivo);
       inci1 = 0;  // Para calcular numero de filas de las matrices
       inci2 = -1; // Para calcular numero de columnas de lsa matrices
@@ -246,15 +255,162 @@ public class Constantes {
 
      // PInvariante.imprimir();
 
+
     }
     catch(Exception e){
 
     }
 
 
+  System.out.println("Ahora voy a mostrar el metodo nuevo");
+    paraTInvariantes();
+
+  }
+
+  public void paraTInvariantes(){
+
+    URL urlob;
+    StringBuffer html;
+    StringBuffer textoPlano;
+    PInvariantes=new ArrayList <String>();
+
+   // String file = "file:///";
+   // String path = null;
+    StringBuffer a = new StringBuffer();
+    try {
+   //   path = (new File(".")).getCanonicalPath();
+      //System.out.println("Ruta actual ");
+      //System.out.println(file + path);
+    //  String archivo = "/analisisInvariante.html";
+
+
+      String linea = null;
+      urlob = new URL(file + path + invariantes );
+      InputStreamReader rea = new InputStreamReader(urlob.openStream());
+      BufferedReader br = new BufferedReader(rea);
+      html = new StringBuffer();
+      textoPlano = new StringBuffer();
+      while ((linea = br.readLine()) != null) {
+        html.append(linea);
+
+
+      }
+
+       //System.out.println(html);
+
+
+      //  Lector lector = new Lector(file+path+archivo);
+      // lector.convertir();
+
+
+      //   System.out.println(lector.getHtml());
+
+      List <String> hola = new ArrayList <String>();
+      hola = cortar("P-Invariant equations", "Analysis time:", html);
+
+
+      // System.out.print(a);
+      for (int i = 0; i < hola.size(); i++) {
+        // System.out.println(hola.get(i));
+        //   System.out.println( hola.get(i).codePointAt(4));
+        StringBuffer q = new StringBuffer(hola.get(i));
+        //  System.out.println(q.length());
+        for (int j = 0; j < q.length(); j++) {
+          if (q.charAt(j) == '=') {
+            q.delete(0, j + 2);
+
+
+          }
+        }
+        for (int j = 0; j < q.length(); j++) {
+
+          if (q.charAt(j) == '<') {
+            q.delete(j, q.length());
+            PInvariantes.add(q.toString());
+          }
+        }
+        //   q.delete(0,15);
+
+
+      }
+      PInvariantes.remove(PInvariantes.size() -1);        // aca resto estos dos porque en la lista me agrega los lugares
+      PInvariantes.remove(PInvariantes.size() -1);        // del <br> que son dos al final, entonces lo saco
+
+      // System.out.println("esta es la lista con los numeros despues del igual");
+      //System.out.println(fin);  /// ESTA RECIEN ES LA LISTA QUE TIENE LOS NUMEROS DESPUES DEL IGUAL.
+
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+
+  public List cortar(String desde , String hasta, StringBuffer textoplano ){
+    // DEL TEXTO PLANO SOLO GUARDA LO QUE ESTE ENTRE LOS DOS STRING SIN INCLUIRLOS
+    List <String> listasdas = new ArrayList <String>();
+
+    //  System.out.println(textoplano.toString());
+    // System.out.println(textoplano.length());
+    for(int i=0; i<textoplano.length();i++){
+
+      if(textoplano.charAt(i) == '<' ){
+        textoplano.insert(i+4, "\n");
+
+      }
+      //System.out.print(textoplano.charAt(i));
+    }
+
+    // System.out.print(textoplano.toString());
+
+
+    String linea;
+    StringReader rea = new StringReader(textoplano.toString());
+    BufferedReader br = new BufferedReader(rea);
+    StringBuffer pedazo = new StringBuffer();
+
+    List<String> ASD= new ArrayList <String>();
+
+    boolean copiando = false;
+    try {
+      while((linea= br.readLine()) != null) {
+
+        if(!copiando&&linea.contains(desde)){
+          copiando=true;
+          continue;
+        }
+
+        if(linea.contains(hasta)){
+          break;
+        }
+        if(copiando){
+          pedazo.append(linea);
+          pedazo.append("\n");
+          ASD.add(linea);
+
+        }
+
+
+
+
+
+      }
+
+
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    //System.out.println("ASD" + ASD.get(1));
+
+
+    return ASD;
+
 
 
   }
+
 
 
 
