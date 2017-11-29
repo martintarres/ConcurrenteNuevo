@@ -156,8 +156,8 @@ public class RdPTest {
             }
             if (Lineas.get(i).contains(petri.lineaMarcados())) {
                 marcadoActual = convertirMarcado(Lineas.get(i + 1)).transpuesta();
-                System.out.println("Voy a mostrar el marcado actual que estoy comprobando");
-                marcadoActual.transpuesta().imprimir();
+                //System.out.println("Voy a mostrar el marcado actual que estoy comprobando");
+                //marcadoActual.transpuesta().imprimir();
 
 
                 List<String> prodInterno = new ArrayList<String>();
@@ -188,18 +188,18 @@ public class RdPTest {
                 }
 
 
-                System.out.println("voy a mostrar lista de resultado del producto interno");
-                System.out.println(prodInterno);
+                //System.out.println("voy a mostrar lista de resultado del producto interno");
+                //System.out.println(prodInterno);
 
               //  System.out.println("Voy a mostrar lista de resultado de ecuaciones");
               //  System.out.println(constantes.fin);
 
 
-                assertEquals(prodInterno, constantes.PInvariantes);
+                assertEquals( cadena,constantes.PInvariantes,prodInterno);
 
-                System.out.println("");
-                System.out.println("");
-                System.out.println("");
+                //System.out.println("");
+                //System.out.println("");
+                //System.out.println("");
 
             }
         }
