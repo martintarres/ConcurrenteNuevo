@@ -1,5 +1,7 @@
 
 import static org.junit.Assert.*;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;
@@ -15,8 +17,11 @@ public class MonitorTest {
 
     @Before
     public void setUp() throws Exception {
-        Log lector = new Log("C:\\Users\\alexa\\Desktop\\ConcurrenteNuevo\\registro.txt",
-                "\"C:\\\\Users\\\\alexa\\\\Desktop\\\\ConcurrenteNuevo\\\\\\registroVacio.txt\"");
+        final String file= "" ;
+        final String path = (new File(".")).getCanonicalPath();
+        final String archivomarcados = "/marcados.txt";
+        final String registro ="/registro.txt";
+        Log lector = new Log(file+path+registro, "");
         // creo una lista de as lineas
         Lineas = lector.leerLineas();
         //System.out.println("Cantidad de Marcados a testear : " + Lineas.size());

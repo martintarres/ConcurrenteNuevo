@@ -65,4 +65,8 @@ public  class ListasDeDisparos {
 
     }
 
+    public ArrayList getLista(ArrayList a){
+        return a;
+    }
+
 }

@@ -29,7 +29,7 @@ public class RdPTest {
                 "\"C:\\\\Users\\\\alexa\\\\Desktop\\\\ConcurrenteNuevo\\\\\\registroVacio.txt\"");
        */
 
-        System.out.println(file+path+archivomarcados);
+       // System.out.println(file+path+archivomarcados);
             Log lector = new Log(file+path+registro, "");
             // creo una lista de as lineas
             Lineas = lector.leerLineas();
