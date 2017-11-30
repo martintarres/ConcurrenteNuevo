@@ -224,7 +224,7 @@ public class Log {
 
             for (String linea:
                     lineas) {
-                marcados.add(this.convertirMarcado(linea));
+                marcados.add(this.convertirMarcado(linea).transpuesta());
             }
 
         }catch(Exception e){
@@ -296,6 +296,24 @@ public class Log {
 
         }
         return estados;
+    }
+    public List<String> getHistorialHilos(){
+        List<String> hilos = new ArrayList<String>();
+        List<String> lineasALeer = this.extraerDisparos();
+        for (String s:
+             lineasALeer) {
+            String [] cast;
+            String hilo="";
+            if (s.contains("no")){
+                cast = s.split("no");
+            }
+            else{
+                cast = s.split("ha disparado");
+            }
+            hilo=cast[0].trim();
+            hilos.add(hilo);
+        }
+        return hilos;
     }
 
 }

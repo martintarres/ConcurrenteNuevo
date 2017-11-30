@@ -23,6 +23,8 @@ public class RdPTest {
     List<Integer> historialDisparos;
     List<Boolean> historialEstadoDisparos;
     List<String> historialContador;
+    List<String> historialHilos;
+
 
     @Before
     public void setUp() throws Exception {
@@ -39,194 +41,72 @@ public class RdPTest {
         this.historialDisparos = log.getHistorialDisparos();
         this.historialEstadoDisparos=log.getHistorialEstadoDisparos();
         this.historialContador= log.extraerLineas("Contador de disparos :",0);
+        this.historialHilos = log.getHistorialHilos();
         
 
     }
 
     @Test
-    public void verificarDisparo() {
-        /* Verifica que el siguiente debió disparar  o NO de acuerdo al marcado anterior.
-
-         */
-        // Debería comprobar sai la dimension de las matrcies coinciden con la del las de incidencia o algo asi???
-        //List<Matriz> marcados = new ArrayList<Matriz>();
-        //marcados.add(petri.marcadoInicial());
-
+    public void verificarSensibilidadDisparo() {
         /*
-
-        EL NRO DE DISPARO ESTA DESFASADO UNA UNIDAD
+        Verifica si el disparo debió o no dispararse de acuerdo al marcado previo.
          */
-/*
-        Matriz marcadoPrevio = petri.marcadoInicial();
-        String[] casteado = {""};
-        String transicion = "";
-        String cadena = "";
-        try {
-            for (int i = 0; i < Lineas.size() - 1; i++) {
-                //System.out.println(marcadoPrevio);
-                if (Lineas.get(i).contains("Contador de disparos :")) {
-                    cadena = Lineas.get(i);
+        Matriz marcadoPrevio = constantes.marcadoInicial;
+        for (int i = 0; i < historialMarcados.size(); i++) {
+            try{
+                if (historialEstadoDisparos.get(i)){
+                    assertTrue(historialContador.get(i)+"\n"+"No se pudo haber disparado = "+ log.traducirDisparo(historialDisparos.get(i)),
+                            petri.transicionSensibilizada(historialDisparos.get(i),RdP.Sensibilizadas(constantes.incidenciaPrevia,marcadoPrevio)));
                 }
-
-                if (Lineas.get(i).contains(log.lineaMarcados())) {
-                    marcadoPrevio = log.convertirMarcado(Lineas.get(i + 1)).transpuesta();
-
-                }
-
-
-                if (Lineas.get(i).contains("ha disparado la transicion") || Lineas.get(i).contains("no ha podido disparar")) {
-                    casteado = Lineas.get(i).split(":");
-                    transicion = casteado[1].trim();
-                    //System.out.println(traducirTransicion(transicion,constantes));
-                    Matriz Sensi = RdP.Sensibilizadas(constantes.incidenciaPrevia, marcadoPrevio);
-                    //System.out.println(Sensi.getM()+"    "+Sensi.getN());
-                    if (Lineas.get(i).contains("no")) {
-                        assertFalse(cadena + "\n" + "La transición " + transicion + " SI estaba sensibilizada", petri.transicionSensibilizada(traducirTransicion(transicion, constantes), Sensi));
-
-                    } else {
-                        assertTrue(cadena + "\n" + "La transición " + transicion + " NO estaba sensibilizada", petri.transicionSensibilizada(traducirTransicion(transicion, constantes), Sensi));
-
-                    }
+                else{
+                    assertFalse(historialContador.get(i)+"\n"+"Si se pudo haber disparado = "+ log.traducirDisparo(historialDisparos.get(i)),
+                            petri.transicionSensibilizada(historialDisparos.get(i),RdP.Sensibilizadas(constantes.incidenciaPrevia,marcadoPrevio)));
                 }
             }
-
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
+            catch(Exception e){}
+            marcadoPrevio=historialMarcados.get(i);
         }
-        */
     }
 
     @Test
     public void verificarMarcado() {
-        for (String s :
-                historialContador) {
-            System.out.println(s);
-        }
-
         /*
-       *Verifica que se obtuvo ese marcado por el disparo de esa transición y el marcado previo
-        *No importa si estaba sensibilizado o no
+        Verifica que todos los marcados del historial se obtuvieron por el disparo de esa transición
+        No tiene en cuenta si estaba sensibilizada o no, solo si se disparó.
          */
-        /*
-        String cadena = "";
-        String[] casteado={};
-        String transicion="";
-        Matriz marcadoPrevio=petri.marcadoInicial();
-        Matriz marcadoActual=petri.marcadoInicial();
-        Matriz marcadoPrueba=petri.marcadoInicial();
-        boolean disparado=false;
-
-        System.out.println(petri.lineaMarcados());
-*/
-
-
-        //System.out.println(log.extraerLineas(petri.lineaMarcados(),0));
-
-        /*
-
-        for (int i = 0; i < Lineas.size(); i++) {
-            try{
-                if (Lineas.get(i).contains("Contador de disparos :")) {
-                    cadena = Lineas.get(i);
+        Matriz marcadoPrevio = constantes.marcadoInicial;
+        for (int i = 0; i < historialMarcados.size(); i++) {
+            if(historialEstadoDisparos.get(i)){
+                try{
+                    Matriz calculada = Matriz.suma(marcadoPrevio,Matriz.obtenerColumna(petri.getIncidencia(),historialDisparos.get(i)));
+                    assertTrue(historialContador.get(i)+"\n"+this.historialHilos.get(i)+"\n"+log.getLineaMarcados()+"\n"+calculada,
+                            historialMarcados.get(i).esIgual(calculada));
                 }
-                if (Lineas.get(i).contains(petri.lineaMarcados())){
-                    marcadoPrevio=marcadoActual;
-                    marcadoActual=convertirMarcado(Lineas.get(i+1)).transpuesta();
-                    if(disparado){
-                        marcadoPrueba=Matriz.suma(marcadoPrevio,Matriz.obtenerColumna(petri.getIncidencia(),traducirTransicion(transicion,constantes)));
-                        assertTrue(cadena+"\n"+"Marcado Actual tuvo que hber sido ="+"\n"+
-                                petri.lineaMarcados()+"\n"+marcadoPrevio,marcadoActual.esIgual(marcadoPrueba));
-
-                    }
-                    else{
-                        assertTrue(cadena+"\n"+"Marcado Actual tuvo que hber sido ="+"\n"+
-                                petri.lineaMarcados()+"\n"+marcadoPrevio,marcadoActual.esIgual(marcadoPrevio));
-                    }
-
-
-                }
-                if(Lineas.get(i).contains("ha disparado la transicion")||Lineas.get(i).contains("no ha podido disparar")){
-                    casteado = Lineas.get(i).split(":");
-                    transicion= casteado[1].trim();
-                    if(Lineas.get(i).contains("no")){
-                        disparado=false;
-                    }
-                    else{
-                        disparado=true;
-                    }
-                }
-
-            }
-            catch(Exception e){
-
+                catch(Exception e){}}
+            else{
+                assertTrue(historialContador.get(i)+"\n"+this.historialHilos.get(i)+"\n"+log.getLineaMarcados()+"\n"+marcadoPrevio,
+                        historialMarcados.get(i).esIgual(marcadoPrevio));
             }
 
+            marcadoPrevio=historialMarcados.get(i);
         }
-        */
-
     }
 
     @Test
     public void pInvariantes() throws Exception {
-        String cadena = "";
-        Matriz marcadoActual = null;
-        for (int i = 0; i < Lineas.size() - 1; i++) {
-            if (Lineas.get(i).contains("Contador de disparos :")) {
-                cadena = Lineas.get(i);
+        /*
+        No está sacado como producto punto, sino como producto vectorial
+         */
+        // POR AHÍ CONVIENE LLAMARLO MATRIZ DE PINVARIANTES Y NO PINVARIANTE
+        System.out.println("Matriz de resultado de los P Invariantes = ");
+        System.out.println(constantes.resultadoPInv);
 
-            }
-            if (Lineas.get(i).contains(log.lineaMarcados())) {
-                marcadoActual = log.convertirMarcado(Lineas.get(i + 1)).transpuesta();
-                //System.out.println("Voy a mostrar el marcado actual que estoy comprobando");
-                //marcadoActual.transpuesta().imprimir();
+        for (int i = 0; i < historialMarcados.size(); i++) {
+            //assertEquals(constantes.resultadoPInv,Matriz.multiplicacion(constantes.PInvariante,historialMarcados.get(i)));
+            Matriz resultado = Matriz.multiplicacion(constantes.PInvariante,historialMarcados.get(i));
 
-
-                List<String> prodInterno = new ArrayList<String>();
-
-                int[][] matrizPInvariante = new int[1][constantes.PInvariante.getN()];
-
-                for (int ii = 0; ii < constantes.PInvariante.getM(); ii++) {
-                    for (int j = 0; j < constantes.PInvariante.getN(); j++) {
-                        matrizPInvariante[0][j] = constantes.PInvariante.getMatriz()[ii][j];
-                    }
-
-
-                    Matriz matrizPInva = null;
-                    try {
-                        matrizPInva = new Matriz(matrizPInvariante);
-                    } catch (MatrizException e) {
-                        e.printStackTrace();
-                    }
-
-                    int resultado = 0;
-
-                    for (int g = 0; g < constantes.PInvariante.getN(); g++) {
-                        int multiplicacion = 0;
-                        multiplicacion = marcadoActual.getMatriz()[g][0] * matrizPInva.getMatriz()[0][g];
-                        resultado = resultado + multiplicacion;
-                    }
-                    prodInterno.add(Integer.toString(resultado));
-                }
-
-
-                //System.out.println("voy a mostrar lista de resultado del producto interno");
-                //System.out.println(prodInterno);
-
-                //  System.out.println("Voy a mostrar lista de resultado de ecuaciones");
-                //  System.out.println(constantes.fin);
-
-
-                assertEquals(cadena, constantes.PInvariantes, prodInterno);
-
-                //System.out.println("");
-                //System.out.println("");
-                //System.out.println("");
-
-            }
+            assertTrue(historialContador.get(i)+"\n"+this.historialHilos.get(i)+"\n"+resultado,
+                    resultado.esIgual(constantes.resultadoPInv));
         }
     }
-
-
-
-
 }
