@@ -6,10 +6,7 @@ public class RdP {
     private Matriz marcadoActual;
     private Matriz incidencia;
     private Matriz incidenciaPrevia;
-
     public Matriz vectorSensibilizadas;
-    public Matriz MInvariantes;
-    public List<PInvariante> listaPI;
     public Constantes constantes;
 
     int contador;
@@ -25,8 +22,6 @@ public class RdP {
 
             this.incidencia = Matriz.suma(constantes.incidenciaPosterior, Matriz.porEscalar(this.incidenciaPrevia, -1));
             this.vectorSensibilizadas = Sensibilizadas(incidenciaPrevia, marcadoInicial);
-            //System.out.println("transiciones iniciales");
-            //vectorSensibilizadas.imprimir();
             contador = 0;
         } catch (Exception e) {
             System.err.println(e.getMessage());

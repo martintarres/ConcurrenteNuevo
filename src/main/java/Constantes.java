@@ -84,15 +84,15 @@ public class Constantes {
 
       private void nombreTransiciones() {
 
-        System.out.println("Nombres de las transiciones");
+        //System.out.println("Nombres de las transiciones");
         nombreTransiciones = new String[Posterior[0].length - 1];
         for (int i = 0; i < nombreTransiciones.length; i++) {
           nombreTransiciones[i] = Posterior[0][i + 1];
          }
         for (String i : nombreTransiciones) {
-          System.out.print(i + " ");
+          //System.out.print(i + " ");
           }
-        System.out.println();
+        //System.out.println();
         nombreMarcados = new String[Posterior.length - 1];
         for (int i = 0; i < nombreMarcados.length; i++) {
           nombreMarcados[i] = Posterior[i + 1][0];

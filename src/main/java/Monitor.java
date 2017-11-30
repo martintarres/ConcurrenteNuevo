@@ -164,11 +164,6 @@ public class Monitor {
         return this.petri;
     }
 
-    public String traducirDisparo(int i) {
-        String transicion = constantes.nombreTransiciones[i];
-        return transicion;
-
-    }
 
     public String printHilosDeVector(String inicio, Matriz Vector) {
         String cadena = inicio;

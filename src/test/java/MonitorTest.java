@@ -19,9 +19,9 @@ public class MonitorTest {
     public void setUp() throws Exception {
         final String file= "" ;
         final String path = (new File(".")).getCanonicalPath();
-        final String archivomarcados = "/marcados.txt";
         final String registro ="/registro.txt";
-        Log lector = new Log(file+path+registro, "");
+        Constantes constante= new Constantes();
+        Log lector = new Log(file+path+registro,constante);
         // creo una lista de as lineas
         Lineas = lector.leerLineas();
         //System.out.println("Cantidad de Marcados a testear : " + Lineas.size());

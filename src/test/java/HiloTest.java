@@ -47,7 +47,8 @@ public class HiloTest {
         final String path = (new File(".")).getCanonicalPath();
         final String archivomarcados = "/marcados.txt";
         final String registro = "/registro.txt";
-        Log lector = new Log(file + path + registro, "");
+        Constantes constantes = new Constantes();
+        Log lector = new Log(file + path + registro, constantes);
         Lineas = lector.leerLineas();
         hilo1 = new ArrayList<String>();
         hilo2 = new ArrayList<String>();

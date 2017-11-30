@@ -11,6 +11,7 @@ public class Log {
     private BufferedReader br;
     private BufferedWriter bw;
     private Constantes constantes;
+    private String lineaMarcados;
 
 
     public Log(final String registro, Constantes constantes){
@@ -18,6 +19,7 @@ public class Log {
         this.direccionRegistro = registro;
         this.registro = new File(registro);
         this.constantes = constantes;
+        this.lineaMarcados=lineaMarcados();
 
     }
     public List<String> leerLineas(){
@@ -111,6 +113,22 @@ public class Log {
             return null;
         }
     }
+    public String traducirDisparo(int i) {
+        String transicion = constantes.nombreTransiciones[i];
+        return transicion;
+
+    }
+    public int traducirTransicion(String transicion) throws Exception {
+
+        for (int i = 0; i < constantes.nombreTransiciones.length; i++) {
+            if (transicion.equals(constantes.nombreTransiciones[i].trim())) {
+                return i;
+            }
+
+        }
+        throw new Exception("No se ha encontrado dicho nombre de transicion" + transicion);
+
+    }
 
     public synchronized void registrarBasico(final Monitor m, final int transicion,boolean bool){
         //escribir("------------------------------------------------------------------------------------------------------------------", this.getRegistro());
@@ -124,7 +142,7 @@ public class Log {
         else {
             cadena = "  no ha podido disparar la transicion  : ";
         }
-        escribir(((Hilo) (Thread.currentThread())).getNombre() + cadena + m.traducirDisparo(transicion), this.getRegistro());
+        escribir(((Hilo) (Thread.currentThread())).getNombre() + cadena + traducirDisparo(transicion), this.getRegistro());
 
 
     }
@@ -159,9 +177,10 @@ public class Log {
 
     public List<String> extraerLineas(String coincidencia, int desfasaje){
         List<String> lineas = new ArrayList<String>();
-        for (int i = 0; i < this.leerLineas().size(); i++) {
-            if (this.leerLineas().get(i).contains(coincidencia)) {
-                lineas.add(this.leerLineas().get(i+desfasaje));
+        List<String> lineasALeer = leerLineas();
+        for (int i = 0; i < lineasALeer.size(); i++) {
+            if (lineasALeer.get(i).contains(coincidencia)) {
+                lineas.add(lineasALeer.get(i+desfasaje));
             }
 
         }
@@ -169,22 +188,10 @@ public class Log {
         return lineas;
     }
     public List<String> extraerMarcados(){
-        return extraerLineas(this.lineaMarcados(),1);
+        return extraerLineas(this.getLineaMarcados(),1);
     }
-    public List<String> extraerDisparos(){
-        List<String> lineas = new ArrayList<String>();
-        for (int i = 0; i < this.leerLineas().size(); i++) {
-            if (this.leerLineas().get(i).contains("no ha podido disparar la transicion")||
-                    this.leerLineas().get(i).contains("ha disparado la transicion  :")) {
-                lineas.add(this.leerLineas().get(i));
-            }
 
-        }
-        return lineas;
-
-    }
     public Matriz convertirMarcado(String Linea) throws Exception {
-        Constantes constantes = new Constantes();
         try {
             List<Integer> enteros = new ArrayList<>();
             String[] casteado = Linea.split(" ");
@@ -210,12 +217,13 @@ public class Log {
         }
 
     }
-    public List<Matriz> Marcados(){
+    public List<Matriz> getHistorialMarcados(){
         List<Matriz> marcados = new ArrayList<Matriz>();
+        List<String> lineas= extraerMarcados();
         try{
 
             for (String linea:
-                    leerLineas()) {
+                    lineas) {
                 marcados.add(this.convertirMarcado(linea));
             }
 
@@ -241,4 +249,53 @@ public class Log {
 
         return cadena;
     }
+    public String getLineaMarcados(){
+        return this.lineaMarcados;
+    }
+
+    public List<String> extraerDisparos(){
+        List<String> lineas = new ArrayList<String>();
+        List<String> lineasALeer = leerLineas();
+        for (int i = 0; i < lineasALeer.size(); i++) {
+            if (lineasALeer.get(i).contains("no ha podido disparar la transicion")||
+                    lineasALeer.get(i).contains("ha disparado la transicion  :")) {
+                lineas.add(lineasALeer.get(i));
+            }
+
+        }
+        return lineas;
+    }
+
+    public List<Integer> getHistorialDisparos(){
+        List<String> lineasDisparos= extraerDisparos();
+        List<Integer> disparos = new ArrayList<Integer>();
+        String [] casteado;
+        for (int i = 0; i < lineasDisparos.size(); i++) {
+            casteado = lineasDisparos.get(i).split(":");
+            try{
+                disparos.add(traducirTransicion(casteado[1].trim()));
+            }
+            catch (Exception e){
+                System.err.println(e.getMessage());
+            }
+
+        }
+        return disparos;
+    }
+    public List<Boolean> getHistorialEstadoDisparos(){
+        List<String> lineasDisparos= extraerDisparos();
+        List<Boolean> estados = new ArrayList<Boolean>();
+        String [] casteado;
+        for (int i = 0; i < lineasDisparos.size(); i++) {
+            if(lineasDisparos.get(i).contains("no")){
+                estados.add(false);
+            }
+            else{
+                estados.add(true);
+            }
+
+        }
+        return estados;
+    }
+
 }

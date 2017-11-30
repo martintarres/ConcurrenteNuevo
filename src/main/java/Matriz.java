@@ -47,10 +47,7 @@ public class Matriz{
     }
 
   }
-  /*public void setMatriz(int [][] matriz){
 
-  }
-  */
   public  static Matriz suma(Matriz A, Matriz B) throws MatrizException{
     if(A.getM()!=B.getM()||A.getN()!=B.getN()){
       throw new MatrizException("Suma : Matrices de tamaños incompatibles");
