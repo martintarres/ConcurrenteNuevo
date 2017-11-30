@@ -11,15 +11,12 @@ public class Principal {
             System.out.println("Seleccione la política = ");
             System.out.println("  1  para 1A-2B-1C");
             System.out.println("  2  para 3A-2B-1C");
-            System.out.println("  3  para Politica Random y modo verborragico");
-            //opcion = entrada.nextLine();
+            System.out.println("  3  para Politica Random");
             Scanner entrada = new Scanner(System.in);
             numero = entrada.nextInt();
-
         }
-
         while(numero!=1&&numero!=2&&numero!=3);
-        //System.out.println("Politica establecida =  "+ numero);
+
 
         Constantes constantes= new Constantes();
         ListasDeDisparos listas =  new ListasDeDisparos();
@@ -27,13 +24,9 @@ public class Principal {
         Monitor monitor= new Monitor(constantes, numero);
 
         System.out.println("Marcado Actual: ");
-        // SOLO LA TRANSPONGO PARA QUE SE IMPRIMI EN UNA LINEA
         monitor.getPetri().marcadoActual().transpuesta().imprimir();
         System.out.println("Matriz Incidencia: ");
         monitor.getPetri().getIncidencia().imprimir();
-//        System.out.println("Matriz P Invariantes: ");
-//        monitor.getPetri().getMInvariantes().imprimir();
-
 
 
 
@@ -59,8 +52,6 @@ public class Principal {
         monitor.mapeo(h7);
         monitor.mapeo(h8);
         monitor.mapeo(h9);
-        monitor.setearAntPost();
-        monitor.showHilos();
 
         h1.start();
         h2.start();
