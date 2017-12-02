@@ -5,16 +5,13 @@ import java.util.concurrent.Semaphore;
 public class Monitor {
     public Semaphore mutex;
     private boolean k;
-    public RdP petri;
+    private RdP petri;
     private List<Hilo> listaHilos;
     private Map<Integer, Hilo> mapa;
     private Constantes constantes;
     private Matriz VectorSensibilizados;
     private Matriz VectorEncolados;
     private Matriz VectorAnd;
-    private Matriz VectorHistorialSensibilizadas;
-
-
     private Log log;
     private static boolean cambio;
     private Politica politica;
@@ -96,14 +93,14 @@ public class Monitor {
                         politica.PiezaC++;
                         cambio = true;
                     }
-                    log.registrarBasico(this, transicion, true);
+                    //log.registrarBasico(this, transicion, true);
                     if (cambio) {
                         this.log.escribir("Cantidad de piezas producidas:  " + "A = " + politica.PiezaA + "   B = " + politica.PiezaB + "   C = " + politica.PiezaC, log.getRegistro());
                         politica.actualizarVista();
                     }
                     cambio = false;
 
-                    this.log.registrarBasico2(this, VectorSensibilizados, VectorEncolados);
+                    //this.log.registrarBasico2(this, VectorSensibilizados, VectorEncolados);
 
                     VectorAnd.and(VectorSensibilizados, VectorEncolados);
 
@@ -113,24 +110,32 @@ public class Monitor {
                         int t = locker.intValue();
                         VectorEncolados.getMatriz()[0][t] = 0;
 
-                        log.registrarEXtendido(this, VectorAnd, mapa.get(locker));
+                        //log.registrarEXtendido(this, VectorAnd, mapa.get(locker));
                         while (mapa.get(locker).getState() != Thread.State.WAITING) {
                             Thread.currentThread().sleep(1);
                             System.err.println("Esperando que se duerma para despertarlo : " + mapa.get(locker).getNombre());
                         }
+//////
+                        this.log.registrar(this,transicion,true,mapa.get(locker));
                         synchronized (locker) {
                             locker.notifyAll();
                             return;
                         }
                     } else {
+///
+                        this.log.registrar(this,transicion,true,null);
+                        //log.registrarEXtendido(this, VectorAnd, null);
 
                         k = false;
                     }
 
                 } else {
+                    //log.registrarEXtendido(this, VectorAnd, null);
                     VectorEncolados.getMatriz()[0][transicion] = 1;
-                    log.registrarBasico(this, transicion, false);
-                    log.registrarBasico2(this, VectorSensibilizados, VectorEncolados);
+                    //log.registrarBasico(this, transicion, false);
+                    //log.registrarBasico2(this, VectorSensibilizados, VectorEncolados);
+////
+                    this.log.registrar(this,transicion,false,null);
                     synchronized (transicion) {
                         this.log.escribir(((Hilo) (Thread.currentThread())).getNombre() + "  devuelve el mutex", this.log.getRegistro());
                         this.log.escribir("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<", this.log.getRegistro());
@@ -175,5 +180,14 @@ public class Monitor {
         }
         return cadena;
 
+    }
+    public Matriz getVectorEncolados(){
+        return this.VectorEncolados;
+    }
+    public Matriz getVectorAnd(){
+        return this.VectorAnd;
+    }
+    public Matriz getVectorSensibilizados(){
+        return this.VectorSensibilizados;
     }
 }

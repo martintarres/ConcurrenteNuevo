@@ -130,7 +130,7 @@ public class Log {
 
     }
 
-    public synchronized void registrarBasico(final Monitor m, final int transicion,boolean bool){
+    public synchronized void registrarBasico( Monitor m,  int transicion,boolean bool){
         //escribir("------------------------------------------------------------------------------------------------------------------", this.getRegistro());
         escribir("\n", this.getRegistro());
         escribir("Contador de disparos : " + m.getPetri().contador, this.getRegistro());
@@ -146,7 +146,7 @@ public class Log {
 
 
     }
-    public synchronized void registrarBasico2(final Monitor m, final Matriz sensi, final Matriz enco){
+    public synchronized void registrarBasico2( Monitor m,  Matriz sensi,  Matriz enco){
         escribir("\n", this.getRegistro());
         escribir("Marcado Actual : ", this.getRegistro());
         escribir(this.lineaMarcados(), this.getRegistro());
@@ -165,12 +165,25 @@ public class Log {
     }
 
 
-    public void registrarEXtendido(Monitor m,Matriz and, Hilo h){
+    public synchronized void registrarEXtendido(Monitor m,Matriz and, Hilo h){
         escribir(m.printHilosDeVector("Hilos en ambas  =  ", and), this.getRegistro());
         escribir("\n", this.getRegistro());
-        escribir("Hilo despertado  =  "+ h.getNombre(), this.getRegistro());
+        if(h!=null){
+            escribir("Hilo despertado  =  "+ h.getNombre(), this.getRegistro());
+        }
+        else{
+            escribir("Hilo despertado  =  "+ "", this.getRegistro());
+        }
+
         escribir("\n", this.getRegistro());
 
+
+    }
+
+    public synchronized void registrar( Monitor m, int transicion, boolean bool,Hilo h){
+        registrarBasico(m,transicion,bool);
+        registrarBasico2(m,m.getPetri().getVectorSensibilizadas(),m.getVectorEncolados());
+        registrarEXtendido(m,m.getVectorAnd(),h);
 
     }
 
@@ -297,7 +310,7 @@ public class Log {
         }
         return estados;
     }
-    public List<String> getHistorialHilos(){
+    public List<String> getHistorialActividadHilos(){
         List<String> hilos = new ArrayList<String>();
         List<String> lineasALeer = this.extraerDisparos();
         for (String s:
@@ -315,5 +328,65 @@ public class Log {
         }
         return hilos;
     }
+
+    public List<String> getListaDeHilos(String linea){
+        List<String> hilos = new ArrayList<String>();
+        String [] cast = linea.split("=");
+        cast = cast[1].split("\\|\\|");
+        for (int i = 0; i < cast.length - 1; i++) {
+            hilos.add(cast[i].trim());
+        }
+        return hilos;
+    }
+    public List<List<String>> getHistorialHilosSensibilizados(){
+        List<List<String>>  historialHilos = new ArrayList<>();
+        List<String> hilos= extraerLineas("Hilos Sensibilizados  =",0);
+        for (String linea :
+                hilos) {
+            historialHilos.add(getListaDeHilos(linea));
+        }
+        return historialHilos;
+
+    }
+    public List<List<String>> getHistorialHilosEncolados(){
+        List<List<String>>  historialHilos = new ArrayList<>();
+        List<String> hilos= extraerLineas("Hilos Encolados  =",0);
+        for (String linea :
+                hilos) {
+            historialHilos.add(getListaDeHilos(linea));
+        }
+        return historialHilos;
+
+    }
+
+    public List<List<String>> getHistorialHilosEnAmbas(){
+        List<List<String>>  historialHilos = new ArrayList<>();
+        List<String> hilos= extraerLineas("Hilos en ambas  =",0);
+        for (String linea :
+                hilos) {
+            historialHilos.add(getListaDeHilos(linea));
+        }
+        return historialHilos;
+
+    }
+
+    public List<String> getHistorialHilosDespertados(){
+        /*
+        En el caso que no se haya despertado ni uno devuelve una cadena vacía.
+         */
+        List<String>  historialHilos = new ArrayList<>();
+        List<String> lineas= extraerLineas("Hilo despertado  =",0);
+        for (String linea:
+             lineas) {
+            String [] hilo = linea.split("=");
+            historialHilos.add(hilo[1].trim());
+
+        }
+
+        return historialHilos;
+
+    }
+
+
 
 }
