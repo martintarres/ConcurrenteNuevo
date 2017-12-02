@@ -1,11 +1,7 @@
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -41,7 +37,7 @@ public class RdPTest {
         this.historialDisparos = log.getHistorialDisparos();
         this.historialEstadoDisparos=log.getHistorialEstadoDisparos();
         this.historialContador= log.extraerLineas("Contador de disparos :",0);
-        this.historialHilos = log.getHistorialHilos();
+        this.historialHilos = log.getHistorialActividadHilos();
         
 
     }
