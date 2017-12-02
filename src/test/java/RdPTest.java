@@ -6,11 +6,8 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by YepezHinostroza on 24/11/2017.
- */
 public class RdPTest {
-    List<String> Lineas;
+
     RdP petri;
     Constantes constantes;
     Log log;
@@ -35,7 +32,7 @@ public class RdPTest {
 
         this.historialMarcados = log.getHistorialMarcados();
         this.historialDisparos = log.getHistorialDisparos();
-        this.historialEstadoDisparos=log.getHistorialEstadoDisparos();
+        this.historialEstadoDisparos = log.getHistorialEstadoDisparos();
         this.historialContador= log.extraerLineas("Contador de disparos :",0);
         this.historialHilos = log.getHistorialActividadHilos();
         
@@ -86,6 +83,11 @@ public class RdPTest {
 
             marcadoPrevio=historialMarcados.get(i);
         }
+    }
+
+    @Test
+    public void verificarHilosSensibilizados(){
+
     }
 
     @Test

@@ -4,227 +4,133 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
-/**
- * Created by YepezHinostroza on 22/11/2017.
- */
+
+
 public class MonitorTest {
     List<String> Lineas;
     boolean bloqueado;
+    Log log;
+    List<String> historialContador;
+    List<Boolean> historialEstadoDisparos;
 
 
     @Before
     public void setUp() throws Exception {
-        final String file= "" ;
+        final String file = "";
         final String path = (new File(".")).getCanonicalPath();
-        final String registro ="/registro.txt";
-        Constantes constante= new Constantes();
-        Log lector = new Log(file+path+registro,constante);
-        // creo una lista de as lineas
-        Lineas = lector.leerLineas();
-        //System.out.println("Cantidad de Marcados a testear : " + Lineas.size());
+        final String registro = "/registro.txt";
+        Constantes constante = new Constantes();
+        log = new Log(file + path + registro, constante);
+        this.historialContador = log.extraerLineas("Contador de disparos :", 0);
+        this.historialEstadoDisparos = log.getHistorialEstadoDisparos();
+        Lineas = log.leerLineas();
+
     }
 
 
     @Test
-    public void monitorBloqueado(){
+    public void monitorBloqueado() {
         /*  Verifica que, habiendose llevado el mutex un hilo, no  es posible que un hilo obtenga el mutex
             hasta que no lo haya devuelto el hilo mencionado primero.
          */
-        String cadena="";
+        /*
+        String cadena = "";
 
         for (int i = 0; i < Lineas.size(); i++) {
-            if(Lineas.get(i).contains(">>>")){
-                bloqueado=true;
+            if (Lineas.get(i).contains(">>>")) {
+                bloqueado = true;
             }
-            if(Lineas.get(i).contains("<<<")){
-                bloqueado=false;
+            if (Lineas.get(i).contains("<<<")) {
+                bloqueado = false;
             }
-            if(Lineas.get(i).contains("Contador de disparos :")){
-                cadena=Lineas.get(i);
+            if (Lineas.get(i).contains("Contador de disparos :")) {
+                cadena = Lineas.get(i);
             }
-            assertFalse(cadena+ "\n"+Lineas.get(i)+"\n",Lineas.get(i).contains("obtiene el mutex.")&&bloqueado);
+            assertFalse(cadena + "\n" + Lineas.get(i) + "\n", Lineas.get(i).contains("obtiene el mutex.") && bloqueado);
 
 
         }
+        */
 
     }
 
     @Test
-    public void encolados(){
+    public void encolados() {
         /*  Analiza sobre la linea Hilos encolados en contraposición de los intento fallidos de disparo e hilo despertado.
         *   Botonea en el caso que haya un encolado que falta  como también que sobre un encolado
         * */
-        List<String> encolados= new ArrayList<String>();
-        String[] casteado= new String[2];
-        String cadena="";
-        boolean encontrado=false;
-        for (int i = 0; i < Lineas.size(); i++) {
-            if(Lineas.get(i).contains("Contador de disparos :")){
-                cadena=Lineas.get(i);
-            }
-            if(Lineas.get(i).contains("no ha podido disparar")){
-                casteado=Lineas.get(i).split("no ha podido disparar");
-                encolados.add(casteado[0].trim());
-                //System.out.println(encolados);
-            }
-            if(Lineas.get(i).contains("Hilo despertado")){
-                casteado=Lineas.get(i).split("=");
-                encolados.remove(casteado[1].trim());
-                //System.out.println(encolados);
-            }
-            if (Lineas.get(i).contains("Hilos Encolados")){
-                casteado= Lineas.get(i).split("=");
-                String [] hilos = casteado[1].split("\\|\\|");
-                String [] hilos2 = new String[hilos.length-1];
 
-                for (int j = 0; j <hilos.length-1; j++) {
-                    hilos2[j]=hilos[j].trim();
-                }
-                for (String enco: encolados) {
-                    encontrado=false;
-                    for (int j = 0; j < hilos2.length; j++) {
-                        if(enco.equals(hilos2[j])){
-                            encontrado=true;
-                            break;
-                        }
+        // NO ANALIZA LA ÚLTIMA MODIFICACIÓN POR IndexOutOfBoundsException
 
-                    }
-                    assertTrue(cadena+"\n"+"Hilo no encontrado encolado = "+ enco,encontrado);
-
-                }
-                for (int j = 0; j < hilos2.length; j++) {
-                    encontrado=false;
-                    for (String enco: encolados) {
-                        if(enco.equals(hilos2[j])){
-                        encontrado=true;
-                        break;
-                    }
-                    }
-                    assertTrue(cadena+"\n"+"Hilo que no debiera estar encolado = "+ hilos2[j],encontrado);
-                }
-
-            }
-
-        }
+        List<String> actividadHilos = log.getHistorialActividadHilos();
+        List<Boolean> estadosDisparos = log.getHistorialEstadoDisparos();
+        List<String> hilosDespertados = log.getHistorialHilosDespertados();
+        List<List<String>> hilosEncolados = log.getHistorialHilosEncolados();
         
-
-    }
-    @Test
-    public void autorizado(){
-        /*Verifica que el próximo en intentar disparar sea el que obtuvo el mutex o el recien despertado.
-        No importa si pudo disparar o no
-        */
-        /*En sí, tambien verifico tambien que tenga prioridad sobre el mutex el recién despertado
-        *
-        * */
-        String cadena="";
-        String [] casteado={"",""};
-        String [] disparado={"",""};
-        String autorizado="";
-
-        //String
-
-        for (int i = 0; i < Lineas.size(); i++) {
-
-            /*
-            if(Lineas.get(i).contains("Hilo despertado")){
-                System.out.println(Lineas.get(i));
-                autorizado=Lineas.get(i).split("=");
-                System.out.println(autorizado[1]);
+        List<String> encolados = new ArrayList<>();
+        for (int i = 0; i < hilosEncolados.size()-1; i++) {
+            if (!estadosDisparos.get(i)){
+                encolados.add(actividadHilos.get(i));
             }
-            */
-            if(Lineas.get(i).contains("Contador de disparos :")){
-                cadena=Lineas.get(i);
+            //System.out.println(encolados+"\n"+hilosEncolados.get(i));
+            assertTrue(this.historialContador.get(i)+"\n"+"Encolados correctos = "+ encolados,
+                    hilosIguales(encolados,hilosEncolados.get(i)));
+            if(hilosDespertados.get(i).trim().length()!=0){
+                encolados.remove(hilosDespertados.get(i));
             }
-
-            if(Lineas.get(i).contains("obtiene el mutex.")){
-                casteado= Lineas.get(i).split("obtiene el mutex.");
-                autorizado=casteado[0].trim();
-            }
-            if(Lineas.get(i).contains("Hilo despertado")){
-                casteado= Lineas.get(i).split("=");
-                autorizado=casteado[1].trim();
-            }
-
-            if(Lineas.get(i).contains("no ha podido disparar la transicion")||Lineas.get(i).contains("ha disparado la transicion")){
-                if(Lineas.get(i).contains("no ha podido disparar la transicion")){
-                    disparado= Lineas.get(i).split("no ha podido disparar la transicion");
-                    disparado[0]=disparado[0].trim();
-                }
-                else{
-                    disparado= Lineas.get(i).split("ha disparado la transicion");
-                    disparado[0]=disparado[0].trim();
-                }
-                assertTrue(cadena+"\n"+Lineas.get(i),autorizado.equals(disparado[0]));
-            }
+            
         }
+
+
+
+
     }
 
     @Test
-    public void hiloDespertadoEncolado(){
+    public void autorizado() {
+        /*Verifica que el próximo en intentar disparar sea el que obtuvo el mutex o el recien despertado.
+        En sí, tambien verifico tambien que tenga prioridad sobre el mutex el recién despertado
+         */
+        List<String> hilosDisparando = log.getHistorialActividadHilos();
+        List<String> hilosPermitods = log.getHistorialHilosPermitidos();
+
+        for (int i = 0; i < hilosDisparando.size(); i++) {
+            assertTrue(this.historialContador.get(i),
+                    hilosDisparando.get(i).equals(hilosPermitods.get(i)));
+        }
+
+    }
+
+    @Test
+    public void hiloDespertadoEncoladoSensibilizado() {
         /*Verifica que sólo se haya despertado un hilo que estaba sensibilizado y encolado(que esté en ambas) .
          */
-        String[] casteado= new String[2];
-        String cadena = "";
-        String hiloDespertado="";
-        boolean encotrado=false;
-        String[] hilos={""};
-        String[] hilos2={""};
-        for (int i = 0; i < Lineas.size(); i++) {
-            if (Lineas.get(i).contains("Contador de disparos :")) {
-                cadena = Lineas.get(i);
-            }
-            if (Lineas.get(i).contains("Hilos en ambas")) {
-                casteado = Lineas.get(i).split("=");
-                hilos = casteado[1].split("\\|\\|");
-                hilos2 = new String[hilos.length - 1];
-            }
-            if(Lineas.get(i).contains("Hilo despertado  =")){
-                encotrado=false;
-                casteado=Lineas.get(i).split("=");
-                hiloDespertado=casteado[1].trim();
-                for (int j = 0; j <hilos.length-1; j++) {
-                    hilos2[j]=hilos[j].trim();
-                }
-                for (int j = 0; j < hilos2.length; j++) {
-                    if (hilos2[j].equals(hiloDespertado)){
-                        encotrado=true;
-                        break;
-                    }
-                }
-                assertTrue(cadena+"\n"+"No se pudo haber despertado el hilo "+ hiloDespertado,encotrado);
+        List<List<String>> listaHilosSensibilizados = log.getHistorialHilosSensibilizados();
+        List<List<String>> listaHilosEncolados = log.getHistorialHilosEncolados();
+        List<String> hilosDespertados = log.getHistorialHilosDespertados();
+        for (int i = 0; i < hilosDespertados.size(); i++) {
+            if (hilosDespertados.get(i).length() != 0) {
+                assertTrue(this.historialContador.get(i),
+                        listaHilosEncolados.get(i).contains(hilosDespertados.get(i)) &&
+                                listaHilosSensibilizados.get(i).contains(hilosDespertados.get(i)));
             }
         }
     }
 
     @Test
-    public void hiloDespertadoSensibilizado(){
+    public void hiloDespertadoDisparado() {
         /*Si se despertó un hilo, tiene que haber podido disparar
          */
-        String[] casteado= new String[2];
-        String cadena = "";
-        String hiloDespertado="";
-        String hiloDisparado="";
-        boolean despertoAlguien=false;
-        String[] hilos={""};
-        String[] hilos2={""};
-        for (int i = 0; i < Lineas.size(); i++) {
-            if (Lineas.get(i).contains("Contador de disparos :")) {
-                cadena = Lineas.get(i);
-            }
-
-            if (Lineas.get(i).contains("Hilo despertado  =")) {
-                casteado = Lineas.get(i).split("=");
-                hiloDespertado = casteado[1].trim();
-                despertoAlguien=true;
-            }
-            if(despertoAlguien&&(Lineas.get(i).contains("ha disparado la transicion")||Lineas.get(i).contains("no ha podido disparar"))){
-                despertoAlguien=false;
-
-                assertFalse(cadena+"\n"+" No se pudo disparar el siguiente hilo despertado:"+ hiloDisparado,Lineas.get(i).contains("no"));
+        List<String> hilosDespertados = log.getHistorialHilosDespertados();
+        for (int i = 0; i < hilosDespertados.size() - 1; i++) {
+            if (hilosDespertados.get(i).length() != 0) {
+                assertTrue(this.historialContador.get(i + 1),
+                        this.historialEstadoDisparos.get(i + 1));
             }
         }
 
@@ -232,72 +138,59 @@ public class MonitorTest {
     }
 
     @Test
-    public void queNoSerepita(){
-        //Encararlo con un or por cada hilo encolado o sensi o ambas
-        String cadena = "";
-        String[] casteado= new String[2];
-        for (int i = 0; i < Lineas.size(); i++) {
-            if (Lineas.get(i).contains("Contador de disparos :")) {
-                cadena = Lineas.get(i);
-            }
-
-            if (Lineas.get(i).contains("Hilos Sensibilizados  =")||Lineas.get(i).contains("Hilos Encolados  =")||Lineas.get(i).contains("Hilos en ambas  =")) {
-                casteado = Lineas.get(i).split("=");
-                String [] hilos = casteado[1].split("\\|\\|");
-                List<String> hilos2= new ArrayList<String>();
-                for (int j = 0; j < hilos.length-1; j++) {
-                    hilos2.add(hilos[j].trim());
-                }
-                for (String hilo : hilos2) {
-                    int cantidad=0;
-                    for (String hiloPivote : hilos2) {
-                        if(hilo.equals(hiloPivote)){
-                            cantidad++;
-                        }
-
-                    }
-                    assertTrue(cadena+"\n"+"El hilo "+ hilo+ "   se repite en: "+ Lineas.get(i),cantidad==1);
-
-                }
-            }
-
+    public void hiloRepetido() {
+        List<List<String>> listaHilosEncolados = log.getHistorialHilosEncolados();
+        List<List<String>> listaHilosSensibilizados = log.getHistorialHilosSensibilizados();
+        List<List<String>> listaHilosEnAmbas = log.getHistorialHilosEnAmbas();
+        for (int i = 0; i < listaHilosEncolados.size(); i++) {
+            assertFalse(this.historialContador.get(i)+"\n"+" Encolado Repetido"
+                    ,hiloRepetido(listaHilosEncolados.get(i)));
         }
-
+        for (int i = 0; i < listaHilosSensibilizados.size(); i++) {
+            assertFalse(this.historialContador.get(i)+"\n"+" Sensibilizado Repetido"
+                    ,hiloRepetido(listaHilosSensibilizados.get(i)));
+        }
+        for (int i = 0; i < listaHilosEnAmbas.size(); i++) {
+            assertFalse(this.historialContador.get(i)+"\n"+" En ambas Repetido"
+                    ,hiloRepetido(listaHilosEnAmbas.get(i)));
+        }
     }
 
     @Test
-    public void bufferLimitado(){
+    public void bufferLimitado() {
         //Deberia hacer la forma que la cantidad maxima no sea hardcodeada...
+        int MAXBUFFER = 9;
 
-        String cadena = "";
-        String[] casteado= new String[2];
-        for (int i = 0; i < Lineas.size(); i++) {
-            if (Lineas.get(i).contains("Contador de disparos :")) {
-                cadena = Lineas.get(i);
-            }
-
-            if (Lineas.get(i).contains("Hilos Encolados  =")) {
-                casteado = Lineas.get(i).split("=");
-                String [] hilos = casteado[1].split("\\|\\|");
-                List<String> hilos2= new ArrayList<String>();
-
-                assertTrue(cadena+"\n"+ "Se ha excedido el buffer. Cantidad ="+ (hilos.length-1),hilos.length-1<9);
-
-
-            }
-
+        List<List<String>> listaHilosEncolados = log.getHistorialHilosEncolados();
+        for (int i = 0; i < listaHilosEncolados.size(); i++) {
+            assertTrue(this.historialContador.get(i),
+                    listaHilosEncolados.get(i).size() < MAXBUFFER);
         }
 
     }
-    @Test
-    public void contadorDisparos(){
 
-    }
     @Test
-    public void quienDevuelve(){
+    public void contadorDisparos() {
 
     }
 
+    @Test
+    public void quienDevuelve() {
+
+    }
+
+    public boolean hiloRepetido(List<String> lista){
+        Set<String> conjunto = new TreeSet<String>(lista);
+        return !(lista.size()==conjunto.size());
+
+    }
+
+    public boolean hilosIguales(List<String> hilo1, List<String> hilo2){
+        Set<String> conjunto = new TreeSet<String>(hilo1);
+        Set<String> conjunto2 = new TreeSet<String>(hilo2);
+        return (conjunto.equals(conjunto2));
+
+    }
 
 
 }
