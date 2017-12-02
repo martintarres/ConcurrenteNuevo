@@ -108,6 +108,7 @@ public class Monitor {
 
                         Integer locker = politica.getLock(VectorAnd);
                         int t = locker.intValue();
+                        this.log.registrar(this, transicion, true, mapa.get(locker));
                         VectorEncolados.getMatriz()[0][t] = 0;
 
                         //log.registrarEXtendido(this, VectorAnd, mapa.get(locker));
@@ -116,14 +117,14 @@ public class Monitor {
                             System.err.println("Esperando que se duerma para despertarlo : " + mapa.get(locker).getNombre());
                         }
 //////
-                        this.log.registrar(this,transicion,true,mapa.get(locker));
+                        //this.log.registrar(this,transicion,true,mapa.get(locker));
                         synchronized (locker) {
                             locker.notifyAll();
                             return;
                         }
                     } else {
 ///
-                        this.log.registrar(this,transicion,true,null);
+                        this.log.registrar(this, transicion, true, null);
                         //log.registrarEXtendido(this, VectorAnd, null);
 
                         k = false;
@@ -135,7 +136,7 @@ public class Monitor {
                     //log.registrarBasico(this, transicion, false);
                     //log.registrarBasico2(this, VectorSensibilizados, VectorEncolados);
 ////
-                    this.log.registrar(this,transicion,false,null);
+                    this.log.registrar(this, transicion, false, null);
                     synchronized (transicion) {
                         this.log.escribir(((Hilo) (Thread.currentThread())).getNombre() + "  devuelve el mutex", this.log.getRegistro());
                         this.log.escribir("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<", this.log.getRegistro());
@@ -164,7 +165,9 @@ public class Monitor {
         for (Integer i : hilo.getTransiciones()) {
             this.mapa.put(i, hilo);
         }
+        this.log.registrarHilo(hilo);
     }
+
     public RdP getPetri() {
         return this.petri;
     }
@@ -181,13 +184,16 @@ public class Monitor {
         return cadena;
 
     }
-    public Matriz getVectorEncolados(){
+
+    public Matriz getVectorEncolados() {
         return this.VectorEncolados;
     }
-    public Matriz getVectorAnd(){
+
+    public Matriz getVectorAnd() {
         return this.VectorAnd;
     }
-    public Matriz getVectorSensibilizados(){
+
+    public Matriz getVectorSensibilizados() {
         return this.VectorSensibilizados;
     }
 }
