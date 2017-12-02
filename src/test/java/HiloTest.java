@@ -25,18 +25,11 @@ public class HiloTest {
 
     @Test
     public void showHilos() {
-        List<String> palabras = new ArrayList<String>();
-        List<String> palabras2 = new ArrayList<String>();
-        palabras.add("hola");
-        palabras.add("mundo");
-        palabras2.add("C");
-
-        palabras2.add("mundo");
-        palabras2.add("hola");
-
-        Set<String> conjunto = new TreeSet<String>(palabras);
-        Set<String> conjunto2 = new TreeSet<String>(palabras2);
-        System.out.println(conjunto.equals(conjunto2));
+        log.leerHilos();
+        for (int i = 0; i < log.getNombreHilos().size(); i++) {
+            System.out.println("Hilo : "+ log.getNombreHilos().get(i));
+            System.out.println("Transiciones : "+ log.getNombreTransiciones().get(i));
+        }
 
     }
 

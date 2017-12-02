@@ -13,6 +13,8 @@ public class Log {
     private BufferedWriter bw;
     private Constantes constantes;
     private String lineaMarcados;
+    private List<String> nombreHilos;
+    private List<String> nombreTransiciones;
 
 
     public Log(final String registro, Constantes constantes) {
@@ -412,6 +414,37 @@ public class Log {
             }
         }
         return hilosPermitidos;
+    }
+
+    public int cantidadHilos(){
+        List<String> hilos = extraerLineas("Nombre de Hilo =",0);
+        return hilos.size();
+    }
+
+    public void leerHilos(){
+        // No hace falta un list de list de string para las transiciones, basta con contains
+        // Si va a hacer falta para verificar el orden de las trnasiciones
+        this.nombreHilos = new ArrayList<String>();
+        String[] cast;
+        for (String linea :
+                extraerLineas("Nombre de Hilo =",0)) {
+            cast = linea.split("=");
+            nombreHilos.add(cast[1].trim());
+        }
+
+
+        this.nombreTransiciones = new ArrayList<String>();
+        for (String linea :
+                extraerLineas("Nombre de Hilo =",1)) {
+            nombreTransiciones.add(linea);
+        }
+
+    }
+    public List<String> getNombreHilos(){
+        return this.nombreHilos;
+    }
+    public List<String> getNombreTransiciones(){
+        return this.nombreTransiciones;
     }
 
 

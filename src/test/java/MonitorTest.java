@@ -13,7 +13,6 @@ import org.junit.Test;
 
 public class MonitorTest {
     List<String> Lineas;
-    boolean bloqueado;
     Log log;
     List<String> historialContador;
     List<Boolean> historialEstadoDisparos;
@@ -159,7 +158,8 @@ public class MonitorTest {
     @Test
     public void bufferLimitado() {
         //Deberia hacer la forma que la cantidad maxima no sea hardcodeada...
-        int MAXBUFFER = 9;
+        int MAXBUFFER = log.cantidadHilos();
+        //System.out.print(MAXBUFFER);
 
         List<List<String>> listaHilosEncolados = log.getHistorialHilosEncolados();
         for (int i = 0; i < listaHilosEncolados.size(); i++) {
