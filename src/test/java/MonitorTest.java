@@ -33,29 +33,35 @@ public class MonitorTest {
 
 
     @Test
-    public void monitorBloqueado() {
-        /*  Verifica que, habiendose llevado el mutex un hilo, no  es posible que un hilo obtenga el mutex
-            hasta que no lo haya devuelto el hilo mencionado primero.
-         */
-        /*
-        String cadena = "";
+    public void estadosMonitor() {
+        List<String> estados = log.getEstadosMonitor();
 
-        for (int i = 0; i < Lineas.size(); i++) {
-            if (Lineas.get(i).contains(">>>")) {
-                bloqueado = true;
-            }
-            if (Lineas.get(i).contains("<<<")) {
-                bloqueado = false;
-            }
-            if (Lineas.get(i).contains("Contador de disparos :")) {
-                cadena = Lineas.get(i);
-            }
-            assertFalse(cadena + "\n" + Lineas.get(i) + "\n", Lineas.get(i).contains("obtiene el mutex.") && bloqueado);
+        MaquinaDeEstados maquina = new MaquinaDeEstados();
+        try{
+            for (String evento :
+                    estados) {
+                if (evento.contains("obtiene")){
+                    String [] cast = evento.split("obtiene");
 
+                    maquina.bloquear(cast[0].trim());
+                }
+                else {
+                    if (evento.contains("devuelve")){
+                        String [] cast = evento.split("devuelve");
 
+                        maquina.desbloquear(cast[0].trim());
+                    }
+                    else{
+                        String [] cast = evento.split("=");
+
+                        maquina.despertar(cast[1].trim());
+                    }
+                }
+            }
         }
-        */
-
+        catch(Exception e){
+            System.err.println(e.getMessage());
+        }
     }
 
     @Test

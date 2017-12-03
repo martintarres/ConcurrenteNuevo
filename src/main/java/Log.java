@@ -462,6 +462,30 @@ public class Log {
         return lista;
 
     }
+    public List<String> getEstadosMonitor(){
+        List<String> lineas = new ArrayList<String>();
+        List<String> lineasALeer = leerLineas();
+        for (int i = 0; i < lineasALeer.size(); i++) {
+            if (lineasALeer.get(i).contains("obtiene el mutex")) {
+
+                lineas.add(lineasALeer.get(i));
+            }
+            if (lineasALeer.get(i).contains("devuelve el mutex")) {
+
+                lineas.add(lineasALeer.get(i));
+            }
+            if (lineasALeer.get(i).contains("Hilo despertado  =")) {
+                String [] cast = lineasALeer.get(i).split("=");
+                if(cast[1].trim().length()!=0){
+                    lineas.add(lineasALeer.get(i));
+                }
+
+
+            }
+        }
+
+        return lineas;
+    }
 
 
 }
