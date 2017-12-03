@@ -447,5 +447,21 @@ public class Log {
         return this.nombreTransiciones;
     }
 
+    public List<List<String>> getTransicionesDeHilos(){
+        List<List<String>> lista= new ArrayList<List<String>>();
+        List<String> lineas = new ArrayList<String>(extraerLineas("Nombre de Hilo =",1));
+        for (int i = 0; i < lineas.size(); i++) {
+            List<String> transiciones = new ArrayList<String>();
+            String [] cast = lineas.get(i).split("-");
+            for (int j = 0; j < cast.length-1; j++) {
+                transiciones.add(cast[j].trim());
+            }
+            lista.add(transiciones);
+        }
+
+        return lista;
+
+    }
+
 
 }

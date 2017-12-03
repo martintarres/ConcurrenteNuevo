@@ -82,12 +82,7 @@ public class MonitorTest {
             if(hilosDespertados.get(i).trim().length()!=0){
                 encolados.remove(hilosDespertados.get(i));
             }
-            
         }
-
-
-
-
     }
 
     @Test
@@ -102,7 +97,6 @@ public class MonitorTest {
             assertTrue(this.historialContador.get(i),
                     hilosDisparando.get(i).equals(hilosPermitods.get(i)));
         }
-
     }
 
     @Test
@@ -132,8 +126,6 @@ public class MonitorTest {
                         this.historialEstadoDisparos.get(i + 1));
             }
         }
-
-
     }
 
     @Test
@@ -169,27 +161,15 @@ public class MonitorTest {
 
     }
 
-    @Test
-    public void contadorDisparos() {
-
-    }
-
-    @Test
-    public void quienDevuelve() {
-
-    }
-
     public boolean hiloRepetido(List<String> lista){
         Set<String> conjunto = new TreeSet<String>(lista);
         return !(lista.size()==conjunto.size());
-
     }
 
     public boolean hilosIguales(List<String> hilo1, List<String> hilo2){
         Set<String> conjunto = new TreeSet<String>(hilo1);
         Set<String> conjunto2 = new TreeSet<String>(hilo2);
         return (conjunto.equals(conjunto2));
-
     }
 
 

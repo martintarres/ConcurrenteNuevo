@@ -30,6 +30,15 @@ public class HiloTest {
             System.out.println("Hilo : "+ log.getNombreHilos().get(i));
             System.out.println("Transiciones : "+ log.getNombreTransiciones().get(i));
         }
+        System.out.println("----------------");
+
+        for (List l :
+                log.getTransicionesDeHilos()) {
+            System.out.println(l);
+        }
+
+    }
+    public void disparoEnSecuencia(){
 
     }
 

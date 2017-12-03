@@ -80,7 +80,6 @@ public class RdPTest {
                 assertTrue(historialContador.get(i)+"\n"+this.historialHilos.get(i)+"\n"+log.getLineaMarcados()+"\n"+marcadoPrevio,
                         historialMarcados.get(i).esIgual(marcadoPrevio));
             }
-
             marcadoPrevio=historialMarcados.get(i);
         }
     }

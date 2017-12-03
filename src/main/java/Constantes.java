@@ -299,7 +299,8 @@ public class Constantes {
 
             int[][] pi = new int [this.PInvariante.getM()][1];
             for (int i = 0; i < this.PInvariante.getM(); i++) {
-                pi[i][0] = Integer.parseInt(PInvariantes.get(i));
+////
+                pi[i][0] = Integer.parseInt(PInvariantes.get(i).trim());
             }
 
             this.resultadoPInv = new Matriz(pi);
